@@ -2,23 +2,31 @@ package signupcmd
 
 import (
 	"fmt"
-
-	"github.com/spf13/cobra"
+	"i9chatClient/helpers"
 )
 
-var (
-	email string
+func printHelp() {
+	fmt.Print(`
+Usage:
+  signup email=example@mail.com
 
-	SignupCmd = &cobra.Command{
-		Use:   "signup",
-		Short: "Create your Account",
-		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println(email)
-		},
+`)
+}
+
+func Execute(arg string) {
+	if arg == "" || arg == "help" {
+		printHelp()
+		return
 	}
-)
 
-func init() {
-	SignupCmd.Flags().StringVar(&email, "email", "", "Account request email")
-	SignupCmd.MarkFlagRequired("email")
+	var email string
+	_, err := fmt.Sscanf(arg, "email=%s", &email)
+	if err != nil || email == "" {
+		helpers.Print("Incorrect use of command: signup")
+		printHelp()
+		return
+	}
+
+	// use email
+	helpers.Print(email)
 }
