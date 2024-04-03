@@ -2,7 +2,9 @@ go 1.22.0
 
 use (
   .
+  ./utils/helpers
+  ./utils/apptypes
+
   ./cmd
   ./cmd/signup
-  ./helpers
 )

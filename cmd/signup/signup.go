@@ -2,7 +2,7 @@ package signupcmd
 
 import (
 	"fmt"
-	"i9chatClient/helpers"
+	"i9chatClient/utils/helpers"
 )
 
 func printHelp() {
