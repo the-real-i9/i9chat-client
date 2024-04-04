@@ -4,6 +4,7 @@ use (
   .
   ./utils/helpers
   ./utils/apptypes
+  ./utils/globals
 
   ./cmd
   ./cmd/signup
