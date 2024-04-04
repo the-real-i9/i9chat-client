@@ -1,13 +1,13 @@
 package helpers
 
 import (
+	"context"
 	"crypto/rand"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
-	"net/url"
+	"i9chatClient/utils/globals"
+
+	"nhooyr.io/websocket"
 )
 
 func Print(val ...any) {
@@ -30,32 +30,22 @@ func GetRandomBytes(length int) []byte {
 	return randomBytes
 }
 
-func WSConnect(rawUrl string, includeAuth bool) (connStream io.ReadCloser, err error) {
-	u, err := url.Parse(rawUrl)
+func WSConnect(path string, authToken any) (connStream *websocket.Conn, err error) {
+	dialOptions := &websocket.DialOptions{}
+
+	if authToken := authToken.(string); authToken != "" {
+		dialOptions.HTTPHeader.Set("Authorization", authToken)
+	}
+
+	conn, _, err := websocket.Dial(context.Background(), "ws://localhost:8000"+path, dialOptions)
+
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("WSConnect: websocket.Dial: %s", err)
 	}
 
-	req, err := http.NewRequest("GET", u.String(), nil)
-	if err != nil {
-		return nil, err
-	}
+	return conn, nil
+}
 
-	secWebsocketKey := base64.StdEncoding.EncodeToString(GetRandomBytes(16))
-
-	req.Header.Set("Connection", "Upgrage")
-	req.Header.Set("Upgrade", "websocket")
-	req.Header.Set("Sec-WebSocket-Version", "13")
-	req.Header.Set("Sec-WebSocket-Key", secWebsocketKey)
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	if res.StatusCode != http.StatusSwitchingProtocols {
-		return nil, fmt.Errorf("websocket handshake failed with status %d", res.StatusCode)
-	}
-
-	return res.Body, nil
+func ReviveLocalStorage() error {
+	return globals.LocalStorage.Revive()
 }
