@@ -11,5 +11,9 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	if err := helpers.ReviveLocalStorage(); err != nil {
+		log.Fatalln(err)
+	}
+
 	cmd.Execute()
 }
