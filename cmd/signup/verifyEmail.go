@@ -29,6 +29,7 @@ func verifyEmail(email string) {
 	for {
 		var input string
 
+		fmt.Scanf("%s", &input)
 		if input == globals.ControlQuit {
 			fmt.Println("Quiting signup session...")
 			closeNormal()
@@ -36,7 +37,7 @@ func verifyEmail(email string) {
 		}
 
 		var code int
-		_, err := fmt.Sscanf(input, "%d", code)
+		_, err := fmt.Sscanf(input, "%d", &code)
 		if err != nil {
 			fmt.Println("Code format error. Retry. Ex:> 123456")
 			continue

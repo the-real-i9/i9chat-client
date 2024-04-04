@@ -38,7 +38,10 @@ func Setenv(key string, value string) error {
 	}
 
 	go func() {
-		oldEnv, _ := os.ReadFile(envFile)
+		oldEnv, err := os.ReadFile(envFile)
+		if err != nil && !errors.Is(err, fs.ErrNotExist) {
+			return
+		}
 
 		var envKV = make(map[string]string)
 

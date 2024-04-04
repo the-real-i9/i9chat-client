@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"i9chatClient/utils/globals"
+	"net/http"
 
 	"nhooyr.io/websocket"
 )
@@ -14,6 +15,11 @@ func Print(val ...any) {
 	fmt.Println()
 	fmt.Println(val...)
 	fmt.Println()
+}
+
+func ParseToStruct(v any, structTemp any) {
+	bt, _ := json.Marshal(v)
+	json.Unmarshal(bt, structTemp)
 }
 
 func ToJSON(val any) string {
@@ -31,7 +37,9 @@ func GetRandomBytes(length int) []byte {
 }
 
 func WSConnect(path string, authToken string) (connStream *websocket.Conn, err error) {
-	dialOptions := &websocket.DialOptions{}
+	dialOptions := &websocket.DialOptions{
+		HTTPHeader: make(http.Header),
+	}
 
 	if authToken != "" {
 		dialOptions.HTTPHeader.Set("Authorization", authToken)

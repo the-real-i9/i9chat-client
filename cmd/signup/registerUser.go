@@ -97,9 +97,9 @@ func registerUser() {
 		// print message
 		helpers.Print(recvData.Body["msg"])
 		// store user data
-		go globals.LocalStorage.SetItem("user", recvData.Body["user"])
+		globals.LocalStorage.SetItem("user", recvData.Body["user"])
 		// store auth token
-		go helpers.Setenv("AUTH_JWT_TOKEN", recvData.Body["jwtToken"].(string))
+		helpers.Setenv("AUTH_JWT_TOKEN", recvData.Body["jwtToken"].(string))
 
 		break
 	}
