@@ -30,10 +30,10 @@ func GetRandomBytes(length int) []byte {
 	return randomBytes
 }
 
-func WSConnect(path string, authToken any) (connStream *websocket.Conn, err error) {
+func WSConnect(path string, authToken string) (connStream *websocket.Conn, err error) {
 	dialOptions := &websocket.DialOptions{}
 
-	if authToken := authToken.(string); authToken != "" {
+	if authToken != "" {
 		dialOptions.HTTPHeader.Set("Authorization", authToken)
 	}
 

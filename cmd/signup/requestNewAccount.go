@@ -14,7 +14,7 @@ import (
 func requestNewAccount(email string) {
 	sendData := map[string]string{"email": email}
 
-	connStream, err := helpers.WSConnect("/api/auth/signup/request_new_account", nil)
+	connStream, err := helpers.WSConnect("/api/auth/signup/request_new_account", "")
 	if err != nil {
 		helpers.Print(err)
 		return
