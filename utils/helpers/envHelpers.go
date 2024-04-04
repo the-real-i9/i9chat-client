@@ -2,6 +2,8 @@ package helpers
 
 import (
 	"encoding/json"
+	"errors"
+	"io/fs"
 	"os"
 )
 
@@ -9,7 +11,7 @@ const envFile string = "env.json"
 
 func Loadenv() error {
 	env, err := os.ReadFile(envFile)
-	if err != nil {
+	if err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return err
 	}
 
@@ -58,7 +60,10 @@ func Unsetenv(key string) error {
 	}
 
 	go func() {
-		oldEnv, _ := os.ReadFile(envFile)
+		oldEnv, err := os.ReadFile(envFile)
+		if err != nil && !errors.Is(err, fs.ErrNotExist) {
+			return
+		}
 
 		var envKV = make(map[string]string)
 
@@ -72,4 +77,8 @@ func Unsetenv(key string) error {
 	}()
 
 	return nil
+}
+
+func Getenv(key string) string {
+	return os.Getenv(key)
 }
