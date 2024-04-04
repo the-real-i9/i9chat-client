@@ -27,6 +27,5 @@ func Execute(arg string) {
 		return
 	}
 
-	// use email
-	helpers.Print(email)
+	requestNewAccount(email)
 }
