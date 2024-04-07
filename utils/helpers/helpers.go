@@ -17,7 +17,7 @@ func Print(val ...any) {
 	fmt.Println()
 }
 
-func ParseToStruct(v any, structTemp any) {
+func ParseTo(v any, structTemp any) {
 	bt, _ := json.Marshal(v)
 	json.Unmarshal(bt, structTemp)
 }

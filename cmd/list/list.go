@@ -33,11 +33,3 @@ func Execute(subCmd string) {
 		return
 	}
 }
-
-func executeUsersListing() {
-
-}
-
-func executeChatsListing() {
-
-}
