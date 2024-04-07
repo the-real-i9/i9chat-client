@@ -3,6 +3,7 @@ package cmd
 import (
 	"bufio"
 	"fmt"
+	listcmd "i9chatClient/cmd/list"
 	signupcmd "i9chatClient/cmd/signup"
 	"i9chatClient/utils/helpers"
 	"os"
@@ -30,11 +31,13 @@ func Execute() {
 		input.Scan()
 		inputCmd := strings.ToLower(input.Text())
 
-		rootCmd, args, _ := strings.Cut(inputCmd, " ")
+		rootCmd, restParts, _ := strings.Cut(inputCmd, " ")
 
 		switch rootCmd {
 		case "signup":
-			signupcmd.Execute(args)
+			signupcmd.Execute(restParts)
+		case "list":
+			listcmd.Execute(restParts)
 		case "help":
 			printHelp()
 		case "exit":
