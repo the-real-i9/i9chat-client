@@ -7,12 +7,6 @@ import (
 	"os"
 )
 
-type WSResp struct {
-	StatusCode int            `json:"statusCode"`
-	Body       map[string]any `json:"body"`
-	Error      string         `json:"error"`
-}
-
 var localStorageFile = "localStorage.json"
 
 type LocalStorage struct {
@@ -36,7 +30,7 @@ func (ls *LocalStorage) DeleteItem(key string) {
 }
 
 func (ls *LocalStorage) save() {
-	lsData, _ := json.Marshal(ls.storage)
+	lsData, _ := json.MarshalIndent(ls.storage, "", "  ")
 
 	os.WriteFile(localStorageFile, lsData, 0644)
 }
