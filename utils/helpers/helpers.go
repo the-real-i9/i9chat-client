@@ -54,6 +54,6 @@ func WSConnect(path string, authToken string) (connStream *websocket.Conn, err e
 	return conn, nil
 }
 
-func ReviveLocalStorage() error {
+func InitLocalStorage() error {
 	return globals.LocalStorage.Revive()
 }

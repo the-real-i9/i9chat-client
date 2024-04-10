@@ -59,7 +59,7 @@ func requestNewAccount(email string) {
 			continue
 		}
 
-		helpers.Setenv("SIGNUP_SESSION_JWT", recvData.Body["signup_session_jwt"].(string))
+		globals.LocalStorage.SetItem("signup_session_jwt", recvData.Body["signup_session_jwt"].(string))
 		break
 	}
 

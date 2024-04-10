@@ -3,6 +3,7 @@ package listcmd
 import (
 	"context"
 	"fmt"
+	"i9chatClient/utils/globals"
 	"i9chatClient/utils/helpers"
 	apptypes "i9chatClient/utils/types"
 
@@ -11,7 +12,7 @@ import (
 )
 
 func executeUsersListing() {
-	connStream, err := helpers.WSConnect("/api/app/user/all_users", helpers.Getenv("AUTH_JWT_TOKEN"))
+	connStream, err := helpers.WSConnect("/api/app/user/all_users", globals.LocalStorage.GetItem("auth_jwt").(string))
 	if err != nil {
 		helpers.Print(err)
 		return

@@ -7,11 +7,7 @@ import (
 )
 
 func main() {
-	if err := helpers.Loadenv(); err != nil {
-		log.Fatalln(err)
-	}
-
-	if err := helpers.ReviveLocalStorage(); err != nil {
+	if err := helpers.InitLocalStorage(); err != nil {
 		log.Fatalln(err)
 	}
 

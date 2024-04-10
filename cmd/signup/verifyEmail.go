@@ -12,7 +12,7 @@ import (
 )
 
 func verifyEmail(email string) {
-	connStream, err := helpers.WSConnect("/api/auth/signup/verify_email", helpers.Getenv("SIGNUP_SESSION_JWT"))
+	connStream, err := helpers.WSConnect("/api/auth/signup/verify_email", globals.LocalStorage.GetItem("signup_session_jwt").(string))
 	if err != nil {
 		helpers.Print(err)
 		return

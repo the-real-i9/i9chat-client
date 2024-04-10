@@ -13,7 +13,7 @@ import (
 )
 
 func registerUser() {
-	connStream, err := helpers.WSConnect("/api/auth/signup/register_user", helpers.Getenv("SIGNUP_SESSION_JWT"))
+	connStream, err := helpers.WSConnect("/api/auth/signup/register_user", globals.LocalStorage.GetItem("signup_session_jwt").(string))
 	if err != nil {
 		helpers.Print(err)
 		return
@@ -92,14 +92,14 @@ func registerUser() {
 			continue
 		}
 
-		helpers.Unsetenv("SIGNUP_SESSION_JWT")
+		globals.LocalStorage.DeleteItem("signup_session_jwt")
 
 		// print message
 		helpers.Print(recvData.Body["msg"])
 		// store user data
-		globals.LocalStorage.SetItem("appClient", recvData.Body["user"])
+		globals.LocalStorage.SetItem("app_client", recvData.Body["user"])
 		// store auth token
-		helpers.Setenv("AUTH_JWT_TOKEN", recvData.Body["jwtToken"].(string))
+		globals.LocalStorage.SetItem("auth_jwt", recvData.Body["jwtToken"].(string))
 
 		break
 	}
