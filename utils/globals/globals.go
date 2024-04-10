@@ -1,6 +1,6 @@
 package globals
 
-import apptypes "i9chatClient/utils/types"
+import "i9chat/client/utils/apptypes"
 
 var ControlQuit = "[[QUIT]]"
 

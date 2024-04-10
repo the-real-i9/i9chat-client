@@ -5,7 +5,7 @@ import (
 	"crypto/rand"
 	"encoding/json"
 	"fmt"
-	"i9chatClient/utils/globals"
+	"i9chat/client/utils/globals"
 	"net/http"
 
 	"nhooyr.io/websocket"

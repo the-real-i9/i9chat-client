@@ -3,9 +3,10 @@ package signupcmd
 import (
 	"context"
 	"fmt"
-	"i9chatClient/utils/globals"
-	"i9chatClient/utils/helpers"
-	apptypes "i9chatClient/utils/types"
+	"i9chat/client/utils/apptypes"
+	"i9chat/client/utils/globals"
+	"i9chat/client/utils/helpers"
+
 	"strings"
 
 	"nhooyr.io/websocket"

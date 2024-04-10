@@ -1,8 +1,8 @@
 package main
 
 import (
-	"i9chatClient/cmd"
-	"i9chatClient/utils/helpers"
+	"i9chat/client/cmd"
+	"i9chat/client/utils/helpers"
 	"log"
 )
 

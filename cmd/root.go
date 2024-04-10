@@ -3,9 +3,10 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	listcmd "i9chatClient/cmd/list"
-	signupcmd "i9chatClient/cmd/signup"
-	"i9chatClient/utils/helpers"
+	listcmd "i9chat/client/cmd/list"
+	signupcmd "i9chat/client/cmd/signup"
+	"i9chat/client/utils/helpers"
+
 	"os"
 	"strings"
 )

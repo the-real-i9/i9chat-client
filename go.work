@@ -2,11 +2,4 @@ go 1.22.0
 
 use (
   .
-  ./utils/helpers
-  ./utils/apptypes
-  ./utils/globals
-
-  ./cmd
-  ./cmd/signup
-  ./cmd/list
 )

@@ -2,7 +2,7 @@ package listcmd
 
 import (
 	"fmt"
-	"i9chatClient/utils/helpers"
+	"i9chat/client/utils/helpers"
 )
 
 func printHelp() {
