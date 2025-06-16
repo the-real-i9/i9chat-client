@@ -1,1 +1,0 @@
-alias i9chat='clear; go build -o i9chat; ./i9chat'

@@ -1,5 +1,0 @@
-package listcmd
-
-func executeChatsListing() {
-
-}
