@@ -1,6 +1,20 @@
 @import "tailwindcss";
 
 
+@font-face {
+  font-family: Ubuntu;
+  src: url("/fonts/Ubuntu-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: Ubuntu;
+  src: url("/fonts/Ubuntu-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
 @layer base {
   :root {
     @apply font-sans leading-[1.5] font-normal scheme-light-dark text-white/[0.87] bg-[#242424];
@@ -23,6 +37,8 @@
   
   body {
     @apply m-0 flex place-items-center min-w-[320px] min-h-screen;
+
+    user-select: none;
   }
   
   h1 {
@@ -59,7 +75,7 @@
 }
 
 @theme {
-  --font-sans: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --font-sans: Ubuntu, system-ui, Avenir, Helvetica, Arial, sans-serif;
 
   --animate-logo-spin: logo-spin infinite 20s linear;
 
