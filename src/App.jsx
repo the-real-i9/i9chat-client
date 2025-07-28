@@ -1,23 +1,15 @@
 import { useState } from 'react'
 import reactLogo from '/logos/react.svg'
 import viteLogo from '/logos/vite.svg'
-import { Toast } from '@capacitor/toast';
 
 function App() {
   const [count, setCount] = useState(0)
 
-  const showHelloToast = async (count) => {
-    await Toast.show({
-      text: 'Hello! ' + count,
-      position: 'top'
-    });
-  };
-
+  const [inputValue, setInputValue] = useState("");
+  
   
   function handleClick() {
     setCount((count) => count + 1)
-
-    showHelloToast(count + 1)
   }
 
   return (
@@ -42,6 +34,9 @@ function App() {
       <p className="read-the-docs text-[#888]">
         Click on the Vite and React logos to learn more
       </p>
+      <div className='py-2'>
+        <input placeholder='Write something...' className="w-2xs h-12 outline-none border border-solid border-neutral-800 focus:border-[#646cff] rounded-lg px-3" type="text" onChange={(ev) => setInputValue(ev.target.value)} value={inputValue} />
+      </div>
     </>
   )
 }
