@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-
 @font-face {
   font-family: Ubuntu;
   src: url("/fonts/Ubuntu-Regular.woff2") format("woff2");
@@ -26,65 +25,28 @@
   }
   
   a {
-    @apply font-medium text-[#646cff];
-    
-    text-decoration: inherit;
-  }
-
-  a:hover {
-    @apply text-[#535bf2];
+    cursor: pointer;
+    text-decoration: underline;
   }
   
   body {
-    @apply m-0 flex place-items-center min-w-[320px] min-h-screen;
 
     user-select: none;
   }
   
-  h1 {
-    @apply text-[3.2em] leading-[1.1];
-  }
-  
   button {
-    @apply rounded-lg border border-solid border-transparent py-[0.6em] px-[1.2em]
-      text-[1em] font-medium bg-[#1a1a1a] cursor-pointer transition-[border-color] duration-250;
+    cursor: pointer;
 
     font-family: inherit;
   }
-  button:hover {
-    @apply border-[#646cff];
-  }
-  button:focus,
-  button:focus-visible {
-    @apply outline-4 outline-[-webkit-focus-ring-color];
 
-    outline-style: auto;
-  }
   
   @media (prefers-color-scheme: light) {
-    :root {
-      @apply text-[#213547] bg-white;
-    }
-    a:hover {
-      @apply text-[#747bff];
-    }
-    button {
-      @apply bg-[#f9f9f9];
-    }
+    
   }
 }
 
 @theme {
   --font-sans: Ubuntu, system-ui, Avenir, Helvetica, Arial, sans-serif;
 
-  --animate-logo-spin: logo-spin infinite 20s linear;
-
-  @keyframes logo-spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
 }
