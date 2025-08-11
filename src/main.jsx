@@ -7,7 +7,7 @@ import "./index.css"
 import store from "./store"
 
 import AppLayout from "./UI/pages/AppLayout.jsx"
-import LoginPage from "./UI/pages/LoginPage.jsx"
+import SigninPage from "./UI/pages/SigninPage.jsx"
 import ChatsTab from "./UI/tabs/ChatsTab.jsx"
 import SignupPage from "./UI/pages/SignupPage.jsx"
 import AuthLayout from "./UI/pages/AuthLayout.jsx"
@@ -38,8 +38,8 @@ const router = createBrowserRouter([
     element: <AuthLayout />,
     children: [
       {
-        path: "login",
-        element: <LoginPage />,
+        path: "signin",
+        element: <SigninPage />,
       },
       {
         path: "signup",

@@ -1,14 +1,17 @@
 import { redirect } from "react-router"
 import store from "../../../store"
 import { setUser } from "../../../store/userSlice"
-import axios from "axios"
+import { appAxios } from "../../../utils/utils"
 
 export default async function appLoader() {
   try {
-    const resp = await axios.get(
-      "http://localhost:8000/api/app/user/session_user",
-      { withCredentials: true }
-    )
+    const { user } = store.getState()
+
+    if (user.info) {
+      return null
+    }
+
+    const resp = await appAxios.get("/app/user/session_user")
     console.log(resp)
 
     const userInfo = {
@@ -21,7 +24,7 @@ export default async function appLoader() {
 
     return null
   } catch (error) {
-    if (error.status == 401) return redirect("/login")
+    if (error.status == 401) return redirect("/signin")
     else console.error(error)
   }
 }
