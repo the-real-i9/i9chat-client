@@ -16,7 +16,7 @@
 
 @layer base {
   :root {
-    @apply font-sans leading-[1.5] font-normal scheme-light-dark text-white/[0.87] bg-[#242424];
+    @apply font-sans;
     
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -38,11 +38,6 @@
     cursor: pointer;
 
     font-family: inherit;
-  }
-
-  
-  @media (prefers-color-scheme: light) {
-    
   }
 }
 

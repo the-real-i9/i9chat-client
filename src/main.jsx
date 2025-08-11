@@ -1,42 +1,58 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router'
-import { Provider } from 'react-redux'
+import { StrictMode, Suspense } from "react"
+import { createRoot } from "react-dom/client"
+import { createBrowserRouter, RouterProvider } from "react-router"
+import { Provider } from "react-redux"
 
+import "./index.css"
+import store from "./store"
 
-import './index.css'
-import App from './UI/pages/App.jsx'
-import store from './store'
-import LoginPage from './UI/pages/LoginPage.jsx'
-import ChatsTab from './UI/tabs/Chats.jsx'
+import AppLayout from "./UI/pages/AppLayout.jsx"
+import LoginPage from "./UI/pages/LoginPage.jsx"
+import ChatsTab from "./UI/tabs/ChatsTab.jsx"
+import SignupPage from "./UI/pages/SignupPage.jsx"
+import AuthLayout from "./UI/pages/AuthLayout.jsx"
+import ChatXView from "./UI/components/ChatXView.jsx"
+import AppLoadingUI from "./UI/components/AppLoadingUI.jsx"
+import appLoader from "./UI/pages/loaders/appLoader.js"
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <App />,
+    path: "/",
+    element: <AppLayout />,
+    hydrateFallbackElement: <AppLoadingUI />,
+    loader: appLoader,
     children: [
       {
-        index: true,
-        path: "chat",
+        path: "chats",
         element: <ChatsTab />,
         children: [
           {
-            path: ":chat_id",
-          }
-        ]
+            path: ":chatId",
+            element: <ChatXView />,
+          },
+        ],
       },
-    ]
+    ],
   },
   {
-    path: "login",
-    element: <LoginPage />
-  }
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "login",
+        element: <LoginPage />,
+      },
+      {
+        path: "signup",
+        element: <SignupPage />,
+      },
+    ],
+  },
 ])
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router} />,
+      <RouterProvider router={router} />
     </Provider>
   </StrictMode>
 )
