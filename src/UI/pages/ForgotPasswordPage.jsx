@@ -1,22 +1,18 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router"
-import { useDispatch } from "react-redux"
-import { setUser } from "../../store/userSlice"
 import { appAxios } from "../../utils/utils"
 
-export default function SignupPage() {
-  const [stage, setStage] = useState(1) // 1: email, 2: verify code, 3: set credentials
+export default function ForgotPasswordPage() {
+  const [stage, setStage] = useState(1) // 1: email, 2: confirmation code, 3: new password
 
   const [email, setEmail] = useState("")
-  const [code, setCode] = useState("")
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
+  const [token, setToken] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmNewPassword, setConfirmNewPassword] = useState("")
 
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState("")
 
-  const dispatch = useDispatch()
   const navigate = useNavigate()
 
   /**
@@ -33,10 +29,12 @@ export default function SignupPage() {
     setError("")
 
     try {
-      await appAxios.post("/auth/signup/request_new_account", { email })
+      await appAxios.post("/auth/forgot_password/request_password_reset", {
+        email,
+      })
       setStage(2)
     } catch (error) {
-      if (error.status === 409) setError(error.response.data)
+      if (error.status === 404) setError(error.response.data)
       else {
         console.error(error)
         setError("dev: debug")
@@ -51,8 +49,8 @@ export default function SignupPage() {
    */
   const handleCodeSubmit = async (e) => {
     e.preventDefault()
-    if (!code) {
-      setError("Please enter the verification code")
+    if (!token) {
+      setError("Please enter the confrmation token")
       return
     }
 
@@ -60,7 +58,7 @@ export default function SignupPage() {
     setError("")
 
     try {
-      await appAxios.post("/auth/signup/verify_email", { code })
+      await appAxios.post("/auth/forgot_password/confirm_email", { token })
       setStage(3)
     } catch (error) {
       if (error.status === 400) setError(error.response.data)
@@ -76,14 +74,14 @@ export default function SignupPage() {
   /**
    * @param {Event} e 
    */
-  const handleCredentialsSubmit = async (e) => {
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault()
-    if (!username || !password || !confirmPassword) {
-      setError("Please fill in all fields")
+    if (!newPassword || !confirmNewPassword) {
+      setError("Please fill in both password fields")
       return
     }
 
-    if (password !== confirmPassword) {
+    if (newPassword !== confirmNewPassword) {
       setError("Passwords do not match")
       return
     }
@@ -92,22 +90,18 @@ export default function SignupPage() {
     setError("")
 
     try {
-      const resp = await appAxios.post("/auth/signup/register_user", {
-        username,
-        password,
+      const resp = await appAxios.post("/auth/forgot_password/reset_password", {
+        newPassword,
+        confirmNewPassword,
       })
 
-      console.log(resp)
-
-      dispatch(setUser(resp.data.user))
-      navigate("/", { replace: true })
+      // Redirect to signin with success message
+      navigate("/signin", {
+        state: { message: resp.data.msg },
+      })
     } catch (error) {
-      if (error.status === 409) {
-        setError(error.response.data)
-      } else {
-        console.error(error)
-        setError("dev: debug")
-      }
+      console.error(error)
+      setError("dev: debug")
     } finally {
       setIsLoading(false)
     }
@@ -115,9 +109,9 @@ export default function SignupPage() {
 
   const renderStage1 = () => (
     <div>
-      <h1 className="text-2xl font-bold mb-6 text-center">Join i9chat</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Reset Password</h1>
       <p className="text-sm text-gray-600 mb-6 text-center">
-        Enter your email address to get started.
+        Enter your email address and we'll send you a verification code.
       </p>
 
       <form onSubmit={handleEmailSubmit} className="space-y-4">
@@ -149,21 +143,23 @@ export default function SignupPage() {
 
   const renderStage2 = () => (
     <div>
-      <h1 className="text-2xl font-bold mb-6 text-center">Verify Your Email</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">
+        Enter Verification Code
+      </h1>
       <p className="text-sm text-gray-600 mb-6 text-center">
         We've sent a verification code to <strong>{email}</strong>
       </p>
 
       <form onSubmit={handleCodeSubmit} className="space-y-4">
         <div>
-          <label htmlFor="code" className="block text-sm font-medium mb-1">
-            Verification Code
+          <label htmlFor="token" className="block text-sm font-medium mb-1">
+            Verification Token
           </label>
           <input
             type="text"
-            id="code"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
+            id="token"
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={isLoading}
             placeholder="Enter 6-digit code"
@@ -176,7 +172,7 @@ export default function SignupPage() {
           disabled={isLoading}
           className="w-full p-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? "Verifying..." : "Verify Code"}
+          {isLoading ? "Verifying..." : "Verify Token"}
         </button>
 
         <button
@@ -193,59 +189,45 @@ export default function SignupPage() {
 
   const renderStage3 = () => (
     <div>
-      <h1 className="text-2xl font-bold mb-6 text-center">
-        Complete Your Account
-      </h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Set New Password</h1>
       <p className="text-sm text-gray-600 mb-6 text-center">
-        Choose your username and password.
+        Enter your new password below.
       </p>
 
-      <form onSubmit={handleCredentialsSubmit} className="space-y-4">
+      <form onSubmit={handlePasswordSubmit} className="space-y-4">
         <div>
-          <label htmlFor="username" className="block text-sm font-medium mb-1">
-            Username
-          </label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            disabled={isLoading}
-            placeholder="Choose a username"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium mb-1">
-            Password
+          <label
+            htmlFor="newPassword"
+            className="block text-sm font-medium mb-1"
+          >
+            New Password
           </label>
           <input
             type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            id="newPassword"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={isLoading}
-            placeholder="Enter password"
+            placeholder="Enter new password"
           />
         </div>
 
         <div>
           <label
-            htmlFor="confirmPassword"
+            htmlFor="confirmNewPassword"
             className="block text-sm font-medium mb-1"
           >
-            Confirm Password
+            Confirm New Password
           </label>
           <input
             type="password"
-            id="confirmPassword"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            id="confirmNewPassword"
+            value={confirmNewPassword}
+            onChange={(e) => setConfirmNewPassword(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             disabled={isLoading}
-            placeholder="Confirm password"
+            placeholder="Confirm new password"
           />
         </div>
 
@@ -254,14 +236,14 @@ export default function SignupPage() {
           disabled={isLoading}
           className="w-full p-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isLoading ? "Creating Account..." : "Create Account"}
+          {isLoading ? "Resetting..." : "Reset Password"}
         </button>
       </form>
     </div>
   )
 
   return (
-    <div className="signup-page h-screen flex justify-center items-center">
+    <div className="forgot-password-page h-screen flex justify-center items-center">
       <div className="w-full max-w-md">
         {error && (
           <div className="p-3 border border-red-300 bg-red-50 text-red-700 rounded mb-4">
@@ -274,9 +256,9 @@ export default function SignupPage() {
         {stage === 3 && renderStage3()}
 
         <p className="mt-4 text-center text-sm">
-          Already have an account?{" "}
+          Remember your password?{" "}
           <Link to="/signin" className="text-blue-600 hover:underline">
-            Sign in
+            Back to Sign in
           </Link>
         </p>
       </div>

@@ -40,7 +40,7 @@ export default function SigninPage() {
       navigate("/", { replace: true })
     } catch (error) {
       if (error.status == 404) setError(error.response.data)
-      else console.error(error)
+      else { console.error(error); setError('dev: debug') }
       setLoading(false)
     }
   }
@@ -48,7 +48,7 @@ export default function SigninPage() {
   return (
     <div className="signin-page h-screen flex justify-center items-center">
       <div className="w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Login to i9chat</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">Sign in to i9chat</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
@@ -58,7 +58,10 @@ export default function SigninPage() {
           )}
 
           <div>
-            <label htmlFor="identifier" className="block text-sm font-medium mb-1">
+            <label
+              htmlFor="identifier"
+              className="block text-sm font-medium mb-1"
+            >
               Email or Username
             </label>
             <input
@@ -87,13 +90,21 @@ export default function SigninPage() {
               disabled={isLoading}
             />
           </div>
+          <div className="text-right">
+            <Link 
+              to="/forgot-password" 
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
 
           <button
             type="submit"
             disabled={isLoading}
             className="w-full p-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? "Logging in..." : "Login"}
+            {isLoading ? "Signing in..." : "Sign in"}
           </button>
         </form>
 

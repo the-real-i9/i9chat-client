@@ -1,4 +1,4 @@
-import { StrictMode, Suspense } from "react"
+import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { createBrowserRouter, RouterProvider } from "react-router"
 import { Provider } from "react-redux"
@@ -14,36 +14,41 @@ import AuthLayout from "./UI/pages/AuthLayout.jsx"
 import ChatXView from "./UI/components/ChatXView.jsx"
 import AppLoadingUI from "./UI/components/AppLoadingUI.jsx"
 import appLoader from "./UI/pages/loaders/appLoader.js"
+import ForgotPasswordPage from "./UI/pages/ForgotPasswordPage.jsx"
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <AppLayout />,
-    hydrateFallbackElement: <AppLoadingUI />,
+    Component: AppLayout,
+    HydrateFallback: AppLoadingUI,
     loader: appLoader,
     children: [
       {
         path: "chats",
-        element: <ChatsTab />,
+        Component: ChatsTab,
         children: [
           {
             path: ":chatId",
-            element: <ChatXView />,
+            Component: ChatXView,
           },
         ],
       },
     ],
   },
   {
-    element: <AuthLayout />,
+    Component: AuthLayout,
     children: [
       {
         path: "signin",
-        element: <SigninPage />,
+        Component: SigninPage,
+      },
+      {
+        path: "forgot-password",
+        Component: ForgotPasswordPage,
       },
       {
         path: "signup",
-        element: <SignupPage />,
+        Component: SignupPage,
       },
     ],
   },

@@ -14,13 +14,11 @@ export default async function appLoader() {
     const resp = await appAxios.get("/app/user/session_user")
     console.log(resp)
 
-    const userInfo = {
-      id: "1",
-      username: "i9ine",
-      profilePicUrl: "",
+    if (!resp.data) {
+      return redirect("/signin")
     }
 
-    store.dispatch(setUser(userInfo))
+    store.dispatch(setUser(resp.data))
 
     return null
   } catch (error) {
