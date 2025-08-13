@@ -15,6 +15,9 @@ import ChatXView from "./UI/components/ChatXView.jsx"
 import AppLoadingUI from "./UI/components/AppLoadingUI.jsx"
 import appLoader from "./UI/pages/loaders/appLoader.js"
 import ForgotPasswordPage from "./UI/pages/ForgotPasswordPage.jsx"
+import MomentsTab from "./UI/tabs/MomentsTab.jsx"
+import CallsTab from "./UI/tabs/CallsTab.jsx"
+import FriendsTab from "./UI/tabs/FriendsTab.jsx"
 
 const router = createBrowserRouter([
   {
@@ -32,6 +35,18 @@ const router = createBrowserRouter([
             Component: ChatXView,
           },
         ],
+      },
+      {
+        path: "moments",
+        Component: MomentsTab,
+      },
+      {
+        path: "calls",
+        Component: CallsTab,
+      },
+      {
+        path: "friends",
+        Component: FriendsTab,
       },
     ],
   },
