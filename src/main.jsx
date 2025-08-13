@@ -18,6 +18,7 @@ import ForgotPasswordPage from "./UI/pages/ForgotPasswordPage.jsx"
 import MomentsTab from "./UI/tabs/MomentsTab.jsx"
 import CallsTab from "./UI/tabs/CallsTab.jsx"
 import FriendsTab from "./UI/tabs/FriendsTab.jsx"
+import chatLoader from "./UI/pages/loaders/chatLoader.js"
 
 const router = createBrowserRouter([
   {
@@ -31,7 +32,8 @@ const router = createBrowserRouter([
         Component: ChatsTab,
         children: [
           {
-            path: ":chatId",
+            path: ":chatIdent",
+            loader: chatLoader,
             Component: ChatXView,
           },
         ],

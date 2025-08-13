@@ -11,7 +11,7 @@ import IncomingWSMessageService from "../../services/realtimeServices/IncomingWS
 export default function AppLayout() {
   const [showUserMenu, setShowUserMenu] = useState(false)
 
-  const user = useSelector((state) => state.user.info)
+  const user = useSelector((state) => state.user.value)
 
   const location = useLocation()
   const dispatch = useDispatch()
@@ -136,9 +136,9 @@ export default function AppLayout() {
             className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-colors"
             title="Account"
           >
-            {user?.profilePicUrl ? (
+            {user?.profile_pic_url ? (
               <img
-                src={user.profilePicUrl}
+                src={user.profile_pic_url}
                 alt={user.username}
                 className="w-full h-full rounded-full object-cover"
               />
