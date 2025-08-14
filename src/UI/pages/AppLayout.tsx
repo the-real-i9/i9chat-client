@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, type MouseEvent } from "react"
 import { Navigate, Outlet, Link, useLocation, useNavigate } from "react-router"
 import { useSelector, useDispatch } from "react-redux"
 import { MessageCircle, Clock, Phone, Users, Settings, LogOut, User } from "lucide-react"
@@ -8,10 +8,12 @@ import { appAxios } from "../../utils/utils"
 import OutgoingWSMessageService from "../../services/realtimeServices/OutgoingWSMsgService"
 import IncomingWSMessageService from "../../services/realtimeServices/IncomingWSMsgService"
 
+import type { RootState } from "../../store"
+
 export default function AppLayout() {
   const [showUserMenu, setShowUserMenu] = useState(false)
 
-  const user = useSelector((state) => state.user.value)
+  const user = useSelector((state: RootState) => state.user.value)
 
   const location = useLocation()
   const dispatch = useDispatch()
@@ -23,7 +25,7 @@ export default function AppLayout() {
 
     const onOpen = () => console.log("WebSocket connected")
     const onError = () => console.log("WebSocket error")
-    const onClose = (ev) =>
+    const onClose = (ev: CloseEvent) =>
       console.log(
         "WebSocket closed. Code: %d. Reason: %s. Normal closure: %s",
         ev.code,
@@ -33,7 +35,7 @@ export default function AppLayout() {
 
     OutgoingWSMessageService.init(ws)
 
-    const onMessage = (ev) => {
+    const onMessage = (ev: MessageEvent) => {
       IncomingWSMessageService.foward(ev.data)
     }
 
@@ -52,10 +54,7 @@ export default function AppLayout() {
     }
   }, [])
 
-  /**
-   * @param {Event} e
-   */
-  const handleLogout = async (e) => {
+  const handleLogout = async (e: MouseEvent) => {
     e.preventDefault()
 
     setShowUserMenu(false)
@@ -94,7 +93,7 @@ export default function AppLayout() {
     },
   ]
 
-  const isActivePath = (path) => {
+  const isActivePath = (path: string) => {
     return location.pathname.startsWith(path)
   }
 

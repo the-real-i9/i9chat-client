@@ -4,21 +4,21 @@ import { createBrowserRouter, RouterProvider } from "react-router"
 import { Provider } from "react-redux"
 
 import "./index.css"
-import store from "./store"
+import store from "./store/index"
 
-import AppLayout from "./UI/pages/AppLayout.jsx"
-import SigninPage from "./UI/pages/SigninPage.jsx"
-import ChatsTab from "./UI/tabs/ChatsTab.jsx"
-import SignupPage from "./UI/pages/SignupPage.jsx"
-import AuthLayout from "./UI/pages/AuthLayout.jsx"
-import ChatXView from "./UI/components/ChatXView.jsx"
-import AppLoadingUI from "./UI/components/AppLoadingUI.jsx"
-import appLoader from "./UI/pages/loaders/appLoader.js"
-import ForgotPasswordPage from "./UI/pages/ForgotPasswordPage.jsx"
-import MomentsTab from "./UI/tabs/MomentsTab.jsx"
-import CallsTab from "./UI/tabs/CallsTab.jsx"
-import FriendsTab from "./UI/tabs/FriendsTab.jsx"
-import chatLoader from "./UI/pages/loaders/chatLoader.js"
+import AppLayout from "./UI/pages/AppLayout.tsx"
+import SigninPage from "./UI/pages/SigninPage.tsx"
+import ChatsTab from "./UI/tabs/ChatsTab.tsx"
+import SignupPage from "./UI/pages/SignupPage.tsx"
+import AuthLayout from "./UI/pages/AuthLayout.tsx"
+import ChatXView from "./UI/components/ChatXView.tsx"
+import AppLoadingUI from "./UI/components/AppLoadingUI.tsx"
+import appLoader from "./UI/pages/loaders/appLoader.ts"
+import ForgotPasswordPage from "./UI/pages/ForgotPasswordPage.tsx"
+import MomentsTab from "./UI/tabs/MomentsTab.tsx"
+import CallsTab from "./UI/tabs/CallsTab.tsx"
+import FriendsTab from "./UI/tabs/FriendsTab.tsx"
+import chatLoader from "./UI/pages/loaders/chatLoader.ts"
 
 const router = createBrowserRouter([
   {
@@ -71,7 +71,7 @@ const router = createBrowserRouter([
   },
 ])
 
-createRoot(document.getElementById("root")).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
       <RouterProvider router={router} />

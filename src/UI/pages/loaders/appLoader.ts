@@ -3,7 +3,9 @@ import { appAxios } from "../../../utils/utils"
 
 import store from "../../../store"
 import { setUser } from "../../../store/userSlice"
-import { setChats } from "../../../store/chatsSlice"
+import { setUserChats } from "../../../store/userChatsSlice"
+import { setUserToChatHistoryMap } from "../../../store/userToChatHistoryMapSlice"
+import type { ChatHistoryEntryT, UserChatT } from "../../../types/appTypes"
 
 export default async function appLoader() {
   try {
@@ -24,7 +26,7 @@ export default async function appLoader() {
     // api request
     // const userChatsResp = await appAxios.get("/app/user/my_chats")
 
-    const sampleDMChat = {
+    const sampleDMChat: UserChatT = {
       chat_type: "DM",
       chat_ident: "i9ine_prime",
       partner: {
@@ -36,7 +38,7 @@ export default async function appLoader() {
       unread_messages_count: 3,
     }
 
-    const sampleGroupChat = {
+    const sampleGroupChat: UserChatT = {
       chat_type: "group",
       chat_ident: "24cc3fd-32e3adec4d-23e23bb2-32323fa", // UUIDv4
       group_info: {
@@ -49,25 +51,30 @@ export default async function appLoader() {
 
     const userChats = [sampleDMChat, sampleGroupChat]
 
-    store.dispatch(setChats(userChats))
+    store.dispatch(setUserChats(userChats))
 
     /* --- CHATx HISTORY --- */
     // iterate userChats, get fetch chat's history,
     // and restructure it into your state's format
 
-    /** @type {Map<string, any[]>} */
-    const userChatHistory = new Map()
+    const userChatHistory: Record<string, ChatHistoryEntryT[]> = {}
 
     userChats.forEach(async (uc) => {
       if (uc.chat_type === "DM") {
         // make API request for DM chat history
         // sample DM chat history for user i9ine_prime
-        const sampleDMChatHistory = [
+        const sampleDMChatHistory: ChatHistoryEntryT[] = [
           {
             chat_hist_entry_type: "message",
-            created_at: new Date(2025, 8, 13, 7).valueOf(),
+            created_at: new Date(2025, 7, 13, 7).valueOf(),
             id: "98ce3cd-56e7adec4a-23e23bb2-323e3fa",
-            content: "json string format (:convert)",
+            // content will come from API as json, transform it into object
+            content: {
+              type: "text",
+              props: {
+                text_content: "Hi, there",
+              },
+            },
             delivery_status: "read",
             is_own: true, // check if this user is the sender user
             sender: {
@@ -77,9 +84,15 @@ export default async function appLoader() {
           },
           {
             chat_hist_entry_type: "message",
-            created_at: new Date(2025, 8, 13, 17).valueOf(),
+            created_at: new Date(2025, 7, 13, 17).valueOf(),
             id: "98ce3cd-26e7addc4a-43e23bb2-623e3fa",
-            content: "json string format (:convert)",
+            // content will come from API as json, transform it into object
+            content: {
+              type: "text",
+              props: {
+                text_content: "Hi, there",
+              },
+            },
             delivery_status: "sent",
             is_own: false, // check if this user is the sender.username
             sender: {
@@ -92,24 +105,28 @@ export default async function appLoader() {
                   username: "i9ine_prime",
                   profile_pic_url: "",
                 },
-                reaction: {
-                  reaction: "🙂",
-                  created_at: new Date(2025, 8, 13, 17, 20).valueOf() 
-                }
-              }
-            ]
+                reaction: "🙂",
+                at: new Date(2025, 7, 13, 17, 20).valueOf(),
+              },
+            ],
           },
           {
             chat_hist_entry_type: "reaction",
             reaction: "🙂",
-            created_at: new Date(2025, 8, 13, 17, 20).valueOf(),
+            created_at: new Date(2025, 7, 13, 17, 20).valueOf(),
           },
           {
             chat_hist_entry_type: "reply",
-            created_at: new Date(2025, 8, 13, 19).valueOf(),
+            created_at: new Date(2025, 7, 13, 19).valueOf(),
             id: "68ce3cd-26e7a4dc4a-43e24bb2-223e3fa",
-            content: "json string format (:convert)",
-            delivery_status: "delivered",
+            // content will come from API as json, transform it into object
+            content: {
+              type: "text",
+              props: {
+                text_content: "How's it going?",
+              },
+            },
+            delivery_status: "read",
             is_own: true, // check if this user is the sender.username
             sender: {
               username: "i9ine",
@@ -117,26 +134,64 @@ export default async function appLoader() {
             },
             replied_to: {
               id: "98ce3cd-26e7addc4a-43e23bb2-623e3fa",
-              content: "json string format (:convert)",
+              // content will come from API as json, transform it into object
+              content: {
+                type: "text",
+                props: {
+                  text_content: "Hi, there",
+                },
+              },
               sender_username: "i9ine_prime",
               is_own: false, // check if this user is the sender_username
             },
-          }
+          },
         ]
 
-        userChatHistory.set(uc.chat_ident, sampleDMChatHistory)
+        userChatHistory[uc.chat_ident] = sampleDMChatHistory
       } else {
         // make API request for Group chat history
         // sample Group chat history for uc.chat_ident
 
-        const sampleGroupChatHistory = []
+        const sampleGroupChatHistory: ChatHistoryEntryT[] = [
+          {
+            chat_hist_entry_type: "group activity",
+            created_at: new Date(2025, 7, 14, 10).valueOf(),
+            info: "You created this group",
+          },
+          {
+            chat_hist_entry_type: "group activity",
+            created_at: new Date(2025, 7, 14, 12).valueOf(),
+            info: "You added i9ine_prime",
+          },
+          {
+            chat_hist_entry_type: "message",
+            created_at: new Date(2025, 7, 14, 11).valueOf(),
+            id: "98ce3cd-26e7addc4a-43e23bb2-623e3fa",
+            // content will come from API as json, transform it into object
+            content: {
+              type: "text",
+              props: {
+                text_content: "Who add me?",
+              },
+            },
+            delivery_status: "delivered",
+            is_own: false, // check if this user is the sender.username
+            sender: {
+              username: "i9ine_prime",
+              profile_pic_url: "",
+            },
+          },
+          
+        ]
 
-        userChatHistory.set(uc.chat_ident, sampleGroupChatHistory)
+        userChatHistory[uc.chat_ident] = sampleGroupChatHistory
       }
     })
 
+    store.dispatch(setUserToChatHistoryMap(userChatHistory))
+
     return null
-  } catch (error) {
+  } catch (error: any) {
     if (error.status == 401) return redirect("/signin")
     else console.error(error)
   }
