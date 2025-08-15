@@ -9,9 +9,10 @@ import {
   Headphones,
 } from "lucide-react"
 import { formatTime } from "../../utils/utils"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import type { UserT } from "../../types/appTypes"
 import type { RootState } from "../../store"
+import { setActiveChat } from "../../store/userChatsSlice"
 
 interface CompProp {
   chatIdent: string
@@ -29,6 +30,8 @@ export default function DMChatSnippet({
   const isActive =
     location.pathname.slice(location.pathname.lastIndexOf("/") + 1) ===
     chatIdent
+
+  const dispatch = useDispatch()
 
   const username = partner?.username,
     profilePicUrl = partner?.profile_pic_url
@@ -146,6 +149,7 @@ export default function DMChatSnippet({
       className={`block p-3 hover:bg-gray-50 transition-colors ${
         isActive ? "bg-blue-50 border-r-2 border-blue-500" : ""
       }`}
+      onClick={() => dispatch(setActiveChat(chatIdent))}
     >
       <div className="flex items-center space-x-3">
         {/* Profile Picture */}

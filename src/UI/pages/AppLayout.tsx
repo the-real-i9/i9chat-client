@@ -15,6 +15,8 @@ export default function AppLayout() {
 
   const user = useSelector((state: RootState) => state.user.value)
 
+  const activeChat = useSelector((state: RootState) => state.userChats.activeChat)
+
   const location = useLocation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -73,7 +75,7 @@ export default function AppLayout() {
   const navigationItems = [
     {
       name: "Chats",
-      path: "/chats",
+      path: `/chats${activeChat ? `/${activeChat}` : ""}`,
       icon: MessageCircle,
     },
     {

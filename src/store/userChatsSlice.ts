@@ -2,8 +2,9 @@ import { createSlice } from "@reduxjs/toolkit"
 import type { UserChatT } from "../types/appTypes"
 
 const initialState: {
-  value: UserChatT[]
-} = { value: [] }
+  value: UserChatT[],
+  activeChat: string | null
+} = { value: [], activeChat: null }
 
 const userChatsSlice = createSlice({
   name: "userChats",
@@ -12,8 +13,11 @@ const userChatsSlice = createSlice({
     setUserChats: (state, action) => {
       state.value = action.payload
     },
+    setActiveChat: (state, action) => {
+      state.activeChat = action.payload
+    }
   },
 })
 
-export const { setUserChats } = userChatsSlice.actions
+export const { setUserChats, setActiveChat } = userChatsSlice.actions
 export default userChatsSlice.reducer

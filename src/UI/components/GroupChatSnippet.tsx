@@ -9,9 +9,10 @@ import {
   Headphones,
 } from "lucide-react"
 import { formatTime } from "../../utils/utils"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import type { GroupInfoT } from "../../types/appTypes"
 import type { RootState } from "../../store"
+import { setActiveChat } from "../../store/userChatsSlice"
 
 interface CompProp {
   chatIdent: string
@@ -29,6 +30,8 @@ export default function GroupChatSnippet({
   const isActive =
     location.pathname.slice(location.pathname.lastIndexOf("/") + 1) ===
     chatIdent
+
+  const dispatch = useDispatch()
 
   const groupName = groupInfo?.name,
     pictureUrl = groupInfo?.picture_url
@@ -148,6 +151,7 @@ export default function GroupChatSnippet({
       className={`block p-3 hover:bg-gray-50 transition-colors ${
         isActive ? "bg-blue-50 border-r-2 border-blue-500" : ""
       }`}
+      onClick={() => dispatch(setActiveChat(chatIdent))}
     >
       <div className="flex items-center space-x-3">
         {/* Profile Picture */}

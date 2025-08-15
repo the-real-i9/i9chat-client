@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, type FormEvent } from "react"
 import { Link, useNavigate } from "react-router"
 import { useDispatch } from "react-redux"
 import { setUser } from "../../store/userSlice"
@@ -19,10 +19,7 @@ export default function SignupPage() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  /**
-   * @param {Event} e 
-   */
-  const handleEmailSubmit = async (e) => {
+  const handleEmailSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!email) {
       setError("Please enter your email address")
@@ -35,7 +32,7 @@ export default function SignupPage() {
     try {
       await appAxios.post("/auth/signup/request_new_account", { email })
       setStage(2)
-    } catch (error) {
+    } catch (error: any) {
       if (error.status === 409) setError(error.response.data)
       else {
         console.error(error)
@@ -46,10 +43,7 @@ export default function SignupPage() {
     }
   }
 
-  /**
-   * @param {Event} e 
-   */
-  const handleCodeSubmit = async (e) => {
+  const handleCodeSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!code) {
       setError("Please enter the verification code")
@@ -62,7 +56,7 @@ export default function SignupPage() {
     try {
       await appAxios.post("/auth/signup/verify_email", { code })
       setStage(3)
-    } catch (error) {
+    } catch (error: any) {
       if (error.status === 400) setError(error.response.data)
       else {
         console.error(error)
@@ -73,10 +67,8 @@ export default function SignupPage() {
     }
   }
 
-  /**
-   * @param {Event} e 
-   */
-  const handleCredentialsSubmit = async (e) => {
+  
+  const handleCredentialsSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!username || !password || !confirmPassword) {
       setError("Please fill in all fields")
@@ -101,7 +93,7 @@ export default function SignupPage() {
 
       dispatch(setUser(resp.data.user))
       navigate("/", { replace: true })
-    } catch (error) {
+    } catch (error: any) {
       if (error.status === 409) {
         setError(error.response.data)
       } else {

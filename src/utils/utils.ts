@@ -2,10 +2,10 @@ import axios from "axios";
 
 export const appAxios = axios.create({ baseURL: "http://localhost:8000/api", withCredentials: true })
 
-export const formatTime = (timestamp) => {
+export const formatTime = (timestamp: number) => {
     const now = new Date()
     const messageTime = new Date(timestamp)
-    const diffInMs = now - messageTime
+    const diffInMs = now.valueOf() - messageTime.valueOf()
     const diffInHours = diffInMs / (1000 * 60 * 60)
     const diffInDays = diffInMs / (1000 * 60 * 60 * 24)
 

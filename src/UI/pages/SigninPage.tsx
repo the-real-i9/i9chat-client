@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, type FormEvent } from "react"
 import { Link, useNavigate } from "react-router"
 import { appAxios } from "../../utils/utils"
 import { useDispatch } from "react-redux"
@@ -9,15 +9,13 @@ export default function SigninPage() {
   const [password, setPassword] = useState("")
 
   const [isLoading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState("")
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  /**
-   * @param {Event} e
-   */
-  const handleSubmit = async (e) => {
+  
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
 
     if (!identifier || !password) {
@@ -26,7 +24,7 @@ export default function SigninPage() {
     }
 
     setLoading(true)
-    setError(null)
+    setError("")
 
     try {
       const resp = await appAxios.post("/auth/signin", {
@@ -38,7 +36,7 @@ export default function SigninPage() {
 
       dispatch(setUser(resp.data.user))
       navigate("/", { replace: true })
-    } catch (error) {
+    } catch (error: any) {
       if (error.status == 404) setError(error.response.data)
       else { console.error(error); setError('dev: debug') }
       setLoading(false)

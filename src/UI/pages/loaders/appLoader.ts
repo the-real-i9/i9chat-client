@@ -24,7 +24,7 @@ export default async function appLoader() {
 
     /* --- USER CHATS --- */
     // api request
-    // const userChatsResp = await appAxios.get("/app/user/my_chats")
+    const userChatsResp = await appAxios.get("/app/user/my_chats")
 
     const sampleDMChat: UserChatT = {
       chat_type: "DM",
