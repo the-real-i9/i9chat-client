@@ -96,7 +96,7 @@ export default function DMChatSnippet({
       )
         return null;
 
-      if (lastChatHistoryEntry.is_own === false)
+      if (!lastChatHistoryEntry.is_own)
         return `${lastChatHistoryEntry.sender?.username}:`;
 
       switch (lastChatHistoryEntry.delivery_status) {
@@ -138,7 +138,7 @@ export default function DMChatSnippet({
     return (
       <div className="flex items-center space-x-1 text-sm text-gray-600">
         {getReadReceipt()}
-        {lastChatHistoryEntry.is_own === false && <span>&nbsp;</span>}
+        {!lastChatHistoryEntry.is_own && <span>&nbsp;</span>}
         {getMessageIcon()}
         <span className="truncate flex-1">{getDisplayContent()}</span>
       </div>
