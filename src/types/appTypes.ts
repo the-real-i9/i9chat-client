@@ -7,6 +7,7 @@ interface UserT {
 }
 
 interface GroupInfoT {
+  id: string
   name: string
   description: string
   picture_url: string

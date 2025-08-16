@@ -1,5 +1,5 @@
 export default class IncomingWSMessageService {
-  static foward(msg) {
+  static foward(msg: string) {
     const { event, data } = JSON.parse(msg)
 
     switch (event) {

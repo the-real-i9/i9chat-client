@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router"
+import { Link, useLocation } from "react-router";
 import {
   Check,
   CheckCheck,
@@ -7,17 +7,17 @@ import {
   AudioLinesIcon,
   Video,
   Headphones,
-} from "lucide-react"
-import { formatTime } from "../../utils/utils"
-import { useDispatch, useSelector } from "react-redux"
-import type { GroupInfoT } from "../../types/appTypes"
-import type { RootState } from "../../store"
-import { setActiveChat } from "../../store/userChatsSlice"
+} from "lucide-react";
+import { formatTime } from "../../utils/utils";
+import { useDispatch, useSelector } from "react-redux";
+import type { GroupInfoT } from "../../types/appTypes";
+import type { RootState } from "../../store";
+import { setActiveChat } from "../../store/userChatsSlice";
 
 interface CompProp {
-  chatIdent: string
-  groupInfo: GroupInfoT | undefined
-  unreadMessagesCount: number
+  chatIdent: string;
+  groupInfo: GroupInfoT | undefined;
+  unreadMessagesCount: number;
 }
 
 export default function GroupChatSnippet({
@@ -25,125 +25,127 @@ export default function GroupChatSnippet({
   groupInfo,
   unreadMessagesCount,
 }: CompProp) {
-  const location = useLocation()
+  const location = useLocation();
 
   const isActive =
     location.pathname.slice(location.pathname.lastIndexOf("/") + 1) ===
-    chatIdent
+    chatIdent;
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const groupName = groupInfo?.name,
-    pictureUrl = groupInfo?.picture_url
+    pictureUrl = groupInfo?.picture_url;
 
   const userChatHistory = useSelector(
-    (state: RootState) => state.userToChatHistoryMap.value[chatIdent]
-  )
+    (state: RootState) => state.userToChatHistoryMap.value[chatIdent],
+  );
 
   // get lastChatHistoryEntry from state
-  const lastChatHistoryEntry = userChatHistory?.at(-1)
+  const lastChatHistoryEntry = userChatHistory?.at(-1);
 
   // get last message timestamp from state
   const lastMessageTimestamp = (() => {
-    if (!userChatHistory) return undefined
+    if (!userChatHistory) return 0;
 
     for (let i = userChatHistory.length; i > 0; i--) {
-      const histEntry = userChatHistory[i - 1]
+      const histEntry = userChatHistory[i - 1];
 
       if (
         histEntry.chat_hist_entry_type === "message" ||
         histEntry.chat_hist_entry_type === "reply"
       ) {
-        return histEntry.created_at
+        return histEntry.created_at;
       }
     }
-  })()
+
+    return 0;
+  })();
 
   const renderLastChatEntry = () => {
-    if (!lastChatHistoryEntry) return null
+    if (!lastChatHistoryEntry) return null;
 
     const getMessageIcon = () => {
       if (
         lastChatHistoryEntry.chat_hist_entry_type !== "message" &&
         lastChatHistoryEntry.chat_hist_entry_type !== "reply"
       )
-        return null
+        return null;
 
-      if (lastChatHistoryEntry.content?.type === "text") return null
+      if (lastChatHistoryEntry.content?.type === "text") return null;
 
       switch (lastChatHistoryEntry.content?.type) {
         case "voice":
-          return <AudioLinesIcon size={14} className="text-gray-500" />
+          return <AudioLinesIcon size={14} className="text-gray-500" />;
         case "audio":
-          return <Headphones size={14} className="text-gray-500" />
+          return <Headphones size={14} className="text-gray-500" />;
         case "video":
-          return <Video size={14} className="text-gray-500" />
+          return <Video size={14} className="text-gray-500" />;
         case "photo":
-          return <Image size={14} className="text-gray-500" />
+          return <Image size={14} className="text-gray-500" />;
         case "file":
-          return <File size={14} className="text-gray-500" />
+          return <File size={14} className="text-gray-500" />;
         default:
-          return null
+          return null;
       }
-    }
+    };
 
     const getReadReceipt = () => {
       if (
         lastChatHistoryEntry.chat_hist_entry_type !== "message" &&
         lastChatHistoryEntry.chat_hist_entry_type !== "reply"
       )
-        return null
+        return null;
 
-      if (!lastChatHistoryEntry.is_own)
-        return `${lastChatHistoryEntry.sender?.username}:`
+      if (lastChatHistoryEntry.is_own === false)
+        return `${lastChatHistoryEntry.sender?.username}:`;
 
       switch (lastChatHistoryEntry.delivery_status) {
         case "sent":
-          return <Check size={14} className="text-gray-400" />
+          return <Check size={14} className="text-gray-400" />;
         case "delivered":
-          return <CheckCheck size={14} className="text-gray-400" />
+          return <CheckCheck size={14} className="text-gray-400" />;
         case "read":
-          return <CheckCheck size={14} className="text-blue-500" />
+          return <CheckCheck size={14} className="text-blue-500" />;
         default:
-          return null
+          return null;
       }
-    }
+    };
 
     const getDisplayContent = () => {
       switch (lastChatHistoryEntry.chat_hist_entry_type) {
         case "reaction":
-          return lastChatHistoryEntry.reaction
+          return lastChatHistoryEntry.reaction;
         case "group activity":
-          return lastChatHistoryEntry.info
+          return lastChatHistoryEntry.info;
         default:
           switch (lastChatHistoryEntry.content?.type) {
             case "text":
-              return lastChatHistoryEntry.content.props.text_content
+              return lastChatHistoryEntry.content.props.text_content;
             case "voice":
-              return "Voice"
+              return "Voice";
             case "photo":
-              return lastChatHistoryEntry.content.props.caption || "Photo"
+              return lastChatHistoryEntry.content.props.caption || "Photo";
             case "video":
-              return lastChatHistoryEntry.content.props.caption || "Video"
+              return lastChatHistoryEntry.content.props.caption || "Video";
             case "audio":
-              return "Audio"
+              return "Audio";
             case "file":
-              return lastChatHistoryEntry.content.props.name
+              return lastChatHistoryEntry.content.props.name;
             default:
-              return null
+              return null;
           }
       }
-    }
+    };
 
     return (
       <div className="flex items-center space-x-1 text-sm text-gray-600">
         {getReadReceipt()}
-        {!lastChatHistoryEntry.is_own && <span>&nbsp;</span>}
+        {lastChatHistoryEntry.is_own === false && <span>&nbsp;</span>}
         {getMessageIcon()}
         <span className="truncate flex-1">{getDisplayContent()}</span>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <Link
@@ -193,5 +195,5 @@ export default function GroupChatSnippet({
         </div>
       </div>
     </Link>
-  )
+  );
 }
