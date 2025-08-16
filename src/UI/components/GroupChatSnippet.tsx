@@ -43,10 +43,10 @@ export default function GroupChatSnippet({
   // get lastChatHistoryEntry from state
   const lastChatHistoryEntry = userChatHistory?.at(-1);
 
+  const lchEntryType = lastChatHistoryEntry?.chat_hist_entry_type;
+
   // get last message timestamp from state
   const lastMessageTimestamp = (() => {
-    if (!userChatHistory) return 0;
-
     for (let i = userChatHistory.length; i > 0; i--) {
       const histEntry = userChatHistory[i - 1];
 
@@ -57,19 +57,13 @@ export default function GroupChatSnippet({
         return histEntry.created_at;
       }
     }
-
-    return 0;
   })();
 
   const renderLastChatEntry = () => {
     if (!lastChatHistoryEntry) return null;
 
     const getMessageIcon = () => {
-      if (
-        lastChatHistoryEntry.chat_hist_entry_type !== "message" &&
-        lastChatHistoryEntry.chat_hist_entry_type !== "reply"
-      )
-        return null;
+      if (lchEntryType !== "message" && lchEntryType !== "reply") return null;
 
       if (lastChatHistoryEntry.content?.type === "text") return null;
 
@@ -90,11 +84,7 @@ export default function GroupChatSnippet({
     };
 
     const getReadReceipt = () => {
-      if (
-        lastChatHistoryEntry.chat_hist_entry_type !== "message" &&
-        lastChatHistoryEntry.chat_hist_entry_type !== "reply"
-      )
-        return null;
+      if (lchEntryType !== "message" && lchEntryType !== "reply") return null;
 
       if (!lastChatHistoryEntry.is_own)
         return `${lastChatHistoryEntry.sender?.username}:`;
@@ -112,7 +102,7 @@ export default function GroupChatSnippet({
     };
 
     const getDisplayContent = () => {
-      switch (lastChatHistoryEntry.chat_hist_entry_type) {
+      switch (lchEntryType) {
         case "reaction":
           return lastChatHistoryEntry.reaction;
         case "group activity":
@@ -140,7 +130,8 @@ export default function GroupChatSnippet({
     return (
       <div className="flex items-center space-x-1 text-sm text-gray-600">
         {getReadReceipt()}
-        {!lastChatHistoryEntry.is_own && <span>&nbsp;</span>}
+        {(lchEntryType === "message" || lchEntryType === "reply") &&
+          !lastChatHistoryEntry.is_own && <span>&nbsp;</span>}
         {getMessageIcon()}
         <span className="truncate flex-1">{getDisplayContent()}</span>
       </div>
@@ -177,9 +168,11 @@ export default function GroupChatSnippet({
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-1">
             <h3 className="font-medium text-gray-900 truncate">{groupName}</h3>
-            <span className="text-xs text-gray-500">
-              {formatTime(lastMessageTimestamp)}
-            </span>
+            {lastMessageTimestamp ? (
+              <span className="text-xs text-gray-500">
+                {formatTime(lastMessageTimestamp)}
+              </span>
+            ) : null}
           </div>
 
           <div className="flex items-center justify-between">

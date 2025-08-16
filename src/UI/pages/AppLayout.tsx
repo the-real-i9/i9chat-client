@@ -1,76 +1,91 @@
-import { useState, useEffect, type MouseEvent } from "react"
-import { Navigate, Outlet, Link, useLocation, useNavigate } from "react-router"
-import { useSelector, useDispatch } from "react-redux"
-import { MessageCircle, Clock, Phone, Users, Settings, LogOut, User } from "lucide-react"
+import { useState, useEffect, type MouseEvent } from "react";
+import { Navigate, Outlet, Link, useLocation, useNavigate } from "react-router";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  MessageCircle,
+  Clock,
+  Phone,
+  Users,
+  Settings,
+  LogOut,
+  User,
+} from "lucide-react";
 
-import { setUser } from "../../store/userSlice"
-import { appAxios } from "../../utils/utils"
-import OutgoingWSMessageService from "../../services/realtimeServices/OutgoingWSMsgService"
-import IncomingWSMessageService from "../../services/realtimeServices/IncomingWSMsgService"
+import { setUser } from "../../store/userSlice";
+import { appAxios } from "../../utils/utils";
+import OutgoingWSMessageService from "../../services/realtimeServices/OutgoingWSMsgService";
+import IncomingWSMessageService from "../../services/realtimeServices/IncomingWSMsgService";
 
-import type { RootState } from "../../store"
+import type { RootState } from "../../store";
+import { setActiveChat, setUserChats } from "../../store/userChatsSlice";
+import { setUserToChatHistoryMap } from "../../store/userToChatHistoryMapSlice";
 
 export default function AppLayout() {
-  const [showUserMenu, setShowUserMenu] = useState(false)
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
-  const user = useSelector((state: RootState) => state.user.value)
+  const user = useSelector((state: RootState) => state.user.value);
 
-  const activeChat = useSelector((state: RootState) => state.userChats.activeChat)
+  const activeChat = useSelector(
+    (state: RootState) => state.userChats.activeChat,
+  );
 
-  const location = useLocation()
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   /* WebSocket Setup */
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8000/api/app/ws")
+    const ws = new WebSocket("ws://localhost:8000/api/app/ws");
 
-    const onOpen = () => console.log("WebSocket connected")
-    const onError = () => console.log("WebSocket error")
+    const onOpen = () => console.log("WebSocket connected");
+    const onError = () => console.log("WebSocket error");
     const onClose = (ev: CloseEvent) =>
       console.log(
         "WebSocket closed. Code: %d. Reason: %s. Normal closure: %s",
         ev.code,
         ev.reason,
-        ev.wasClean
-      )
+        ev.wasClean,
+      );
 
-    OutgoingWSMessageService.init(ws)
+    OutgoingWSMessageService.init(ws);
 
     const onMessage = (ev: MessageEvent) => {
-      IncomingWSMessageService.foward(ev.data)
-    }
+      IncomingWSMessageService.foward(ev.data);
+    };
 
-    ws.addEventListener("open", onOpen)
-    ws.addEventListener("error", onError)
-    ws.addEventListener("close", onClose)
-    ws.addEventListener("message", onMessage)
+    ws.addEventListener("open", onOpen);
+    ws.addEventListener("error", onError);
+    ws.addEventListener("close", onClose);
+    ws.addEventListener("message", onMessage);
 
     return () => {
-      ws.close(1000)
+      ws.close(1000);
 
-      ws.removeEventListener("open", onOpen)
-      ws.removeEventListener("error", onError)
-      ws.removeEventListener("close", onClose)
-      ws.removeEventListener("message", onMessage)
-    }
-  }, [])
+      ws.removeEventListener("open", onOpen);
+      ws.removeEventListener("error", onError);
+      ws.removeEventListener("close", onClose);
+      ws.removeEventListener("message", onMessage);
+    };
+  }, []);
 
   const handleLogout = async (e: MouseEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    setShowUserMenu(false)
+    setShowUserMenu(false);
 
     try {
-      const resp = await appAxios.get("/app/user/signout")
+      const resp = await appAxios.get("/app/user/signout");
 
-      dispatch(setUser(null))
+      dispatch(setUser(null));
+      dispatch(setUserChats([]));
+      dispatch(setActiveChat(null));
+      dispatch(setUserToChatHistoryMap({}));
 
-      navigate("/signin", { state: { msg: resp.data } })
+      navigate("/signin", { state: { msg: resp.data } });
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const navigationItems = [
     {
@@ -93,11 +108,11 @@ export default function AppLayout() {
       path: "/friends",
       icon: Users,
     },
-  ]
+  ];
 
   const isActivePath = (path: string) => {
-    return location.pathname.startsWith(path)
-  }
+    return location.pathname.startsWith(path);
+  };
 
   return (
     <div className="app-layout h-screen flex">
@@ -106,9 +121,9 @@ export default function AppLayout() {
         {/* Navigation Items */}
         <div className="flex flex-col space-y-4">
           {navigationItems.map((item) => {
-            const Icon = item.icon
-            const isActive = isActivePath(item.path)
-            
+            const Icon = item.icon;
+            const isActive = isActivePath(item.path);
+
             return (
               <Link
                 key={item.name}
@@ -126,7 +141,7 @@ export default function AppLayout() {
                   {item.name}
                 </div>
               </Link>
-            )
+            );
           })}
         </div>
 
@@ -156,14 +171,14 @@ export default function AppLayout() {
                 className="fixed inset-0 z-10"
                 onClick={() => setShowUserMenu(false)}
               />
-              
+
               {/* Menu */}
               <div className="absolute bottom-full left-0 mb-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
                 <div className="p-3 border-b border-gray-200">
                   <p className="font-medium text-gray-900">{user?.username}</p>
                   <p className="text-sm text-gray-500">{user?.email}</p>
                 </div>
-                
+
                 <div className="py-1">
                   <button
                     onClick={() => setShowUserMenu(false)}
@@ -172,7 +187,7 @@ export default function AppLayout() {
                     <Settings size={16} />
                     <span>Settings</span>
                   </button>
-                  
+
                   <button
                     onClick={handleLogout}
                     className="w-full px-3 py-2 text-left text-red-600 hover:bg-red-50 flex items-center space-x-2"
@@ -191,9 +206,6 @@ export default function AppLayout() {
       <div className="flex-1 flex">
         <Outlet />
       </div>
-      
-      {/* Default redirect to chats */}
-      {location.pathname === "/" && <Navigate to="/chats" replace />}
     </div>
-  )
+  );
 }

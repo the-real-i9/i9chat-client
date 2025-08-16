@@ -1,52 +1,54 @@
-import { useState, type FormEvent } from "react"
-import { Link, useNavigate } from "react-router"
-import { appAxios } from "../../utils/utils"
-import { useDispatch } from "react-redux"
-import { setUser } from "../../store/userSlice"
+import { useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router";
+import { appAxios } from "../../utils/utils";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../store/userSlice";
 
 export default function SigninPage() {
-  const [identifier, setIdentifier] = useState("")
-  const [password, setPassword] = useState("")
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [isLoading, setLoading] = useState(false)
-  const [error, setError] = useState("")
+  const [isLoading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!identifier || !password) {
-      setError("Please fill in all fields")
-      return
+      setError("Please fill in all fields");
+      return;
     }
 
-    setLoading(true)
-    setError("")
+    setLoading(true);
+    setError("");
 
     try {
       const resp = await appAxios.post("/auth/signin", {
         emailOrUsername: identifier,
         password,
-      })
+      });
 
-      console.log(resp)
-
-      dispatch(setUser(resp.data.user))
-      navigate("/", { replace: true })
+      dispatch(setUser(resp.data.user));
+      navigate("/", { replace: true });
     } catch (error: any) {
-      if (error.status == 404) setError(error.response.data)
-      else { console.error(error); setError('dev: debug') }
-      setLoading(false)
+      if (error.status == 404) setError(error.response.data);
+      else {
+        console.error(error);
+        setError("dev: debug");
+      }
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="signin-page h-screen flex justify-center items-center">
       <div className="w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Sign in to i9chat</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">
+          Sign in to i9chat
+        </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
@@ -89,8 +91,8 @@ export default function SigninPage() {
             />
           </div>
           <div className="text-right">
-            <Link 
-              to="/forgot-password" 
+            <Link
+              to="/forgot-password"
               className="text-sm text-blue-600 hover:underline"
             >
               Forgot password?
@@ -114,5 +116,5 @@ export default function SigninPage() {
         </p>
       </div>
     </div>
-  )
+  );
 }

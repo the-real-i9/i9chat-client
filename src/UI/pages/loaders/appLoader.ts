@@ -9,12 +9,6 @@ import type { ChatHistoryEntryT, UserChatT } from "../../../types/appTypes";
 
 export default async function appLoader() {
   try {
-    const { user } = store.getState();
-
-    if (user.value) {
-      return null;
-    }
-
     /* --- USER DATA --- */
     const userResp = await appAxios.get("/app/user/session_user");
     if (!userResp.data) {
@@ -35,7 +29,7 @@ export default async function appLoader() {
     const userChatHistory = new Map<string, ChatHistoryEntryT[]>();
 
     await Promise.all(
-      userChats.map(async (uc) => {
+      [...userChats].map(async (uc) => {
         if (uc.chat_type === "DM") {
           const dmChatHistoryRes = await appAxios.get(
             `/app/dm_chat/${uc.partner?.username}/history`,
