@@ -15,6 +15,7 @@ interface GroupInfoT {
 
 interface UserChatT {
   chat_type: "DM" | "group";
+
   is_typing?: boolean;
   typing_users?: string[];
   chat_ident: string;
