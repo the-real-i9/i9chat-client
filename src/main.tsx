@@ -11,14 +11,13 @@ import SigninPage from "./UI/pages/SigninPage.tsx";
 import ChatsTab from "./UI/tabs/ChatsTab.tsx";
 import SignupPage from "./UI/pages/SignupPage.tsx";
 import AuthLayout from "./UI/pages/AuthLayout.tsx";
-import ChatXView from "./UI/components/ChatXView.tsx";
+import ChatXView from "./UI/components/chat/ChatXView.tsx";
 import AppLoadingUI from "./UI/components/AppLoadingUI.tsx";
 import appLoader from "./UI/pages/loaders/appLoader.ts";
 import ForgotPasswordPage from "./UI/pages/ForgotPasswordPage.tsx";
 import MomentsTab from "./UI/tabs/MomentsTab.tsx";
 import CallsTab from "./UI/tabs/CallsTab.tsx";
 import FriendsTab from "./UI/tabs/FriendsTab.tsx";
-import chatLoader from "./UI/pages/loaders/chatLoader.ts";
 
 const router = createBrowserRouter([
   {
@@ -37,7 +36,6 @@ const router = createBrowserRouter([
         children: [
           {
             path: ":chatIdent",
-            loader: chatLoader,
             Component: ChatXView,
           },
         ],

@@ -1,5 +1,5 @@
 import { useState, useEffect, type MouseEvent } from "react";
-import { Navigate, Outlet, Link, useLocation, useNavigate } from "react-router";
+import { Outlet, Link, useLocation, useNavigate } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import {
   MessageCircle,
@@ -90,7 +90,7 @@ export default function AppLayout() {
   const navigationItems = [
     {
       name: "Chats",
-      path: `/chats${activeChat ? `/${activeChat}` : ""}`,
+      path: `/chats${activeChat?.chat_ident ? `/${activeChat.chat_ident}` : ""}`,
       icon: MessageCircle,
     },
     {
@@ -134,6 +134,7 @@ export default function AppLayout() {
                     : "text-gray-600 hover:bg-gray-200"
                 }`}
                 title={item.name}
+                preventScrollReset
               >
                 <Icon size={20} />
                 {/* Tooltip */}
