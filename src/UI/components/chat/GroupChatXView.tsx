@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, type FormEvent } from "react";
+import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { Phone, Video, MoreVertical, Send, Paperclip, Mic } from "lucide-react";
+import { Phone, Video, MoreVertical } from "lucide-react";
 
 import TextMessage from "./messageSnippets/TextMessage";
 import PhotoMessage from "./messageSnippets/PhotoMessage";
@@ -18,7 +18,6 @@ export default function GroupChatXView({ chatInfo }: { chatInfo: UserChatT }) {
     (state: RootState) => state.userToChatHistoryMap.value[chatInfo.chat_ident],
   );
 
-  const [messageInput, setMessageInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -29,19 +28,24 @@ export default function GroupChatXView({ chatInfo }: { chatInfo: UserChatT }) {
     scrollToBottom();
   }, []);
 
-  const handleSendMessage = (e: FormEvent) => {
-    e.preventDefault();
-    if (!messageInput.trim()) return;
-
-    // TODO: Send message to backend
-    console.log("Sending message:", messageInput);
-    setMessageInput("");
-  };
-
   const renderChatHistoryEntry = (entry: ChatHistoryEntryT) => {
     const entryType = entry.chat_hist_entry_type;
-    if (entryType !== "message" && entryType !== "reply") {
+    if (
+      entryType !== "message" &&
+      entryType !== "reply" &&
+      entryType !== "group activity"
+    ) {
       return null;
+    }
+
+    if (entryType === "group activity") {
+      return (
+        <div className="flex my-4 justify-center text-xs/[1.55]">
+          <p className="bg-gray-200 px-1.5 py-1 rounded-md max-w-sm text-center">
+            {entry.info}
+          </p>
+        </div>
+      );
     }
 
     const genProps = {

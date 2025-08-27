@@ -17,22 +17,21 @@
 @layer base {
   :root {
     @apply font-sans;
-    
+
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  
+
   a {
     cursor: pointer;
   }
-  
-  body {
 
+  body {
     user-select: none;
   }
-  
+
   button {
     cursor: pointer;
 
@@ -41,6 +40,5 @@
 }
 
 @theme {
-  --font-sans: Ubuntu, system-ui, Avenir, Helvetica, Arial, sans-serif;
-
+  --font-sans: system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
