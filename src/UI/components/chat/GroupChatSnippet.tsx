@@ -140,11 +140,12 @@ export default function GroupChatSnippet({
 
   return (
     <Link
-      to={`/chats/${chatIdent}`}
+      to={chatIdent}
+      relative="route"
       className={`block p-3 hover:bg-gray-50 transition-colors ${
         isActive ? "bg-blue-50 border-r-2 border-blue-500" : ""
       }`}
-      onClick={() => dispatch(setActiveChat(userChat))}
+      onClick={() => dispatch(setActiveChat(userChat.chat_ident))}
       preventScrollReset
     >
       <div className="flex items-center space-x-3">

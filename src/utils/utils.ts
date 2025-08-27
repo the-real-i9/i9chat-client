@@ -32,13 +32,35 @@ export const formatTime = (timestamp: number) => {
 };
 
 export const formatLastSeen = (lastSeen: number) => {
-  const now = Date.now();
-  const diffInMs = now - lastSeen;
-  const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+  const now = new Date();
+  const seenDate = new Date(lastSeen);
 
-  if (diffInMinutes < 1) return "last seen just now";
-  if (diffInMinutes < 60) return `last seen ${diffInMinutes}m ago`;
-  if (diffInMinutes < 1440)
-    return `last seen ${Math.floor(diffInMinutes / 60)}h ago`;
-  return `last seen ${new Date(lastSeen).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })}`;
+  const isToday = now.toDateString() === seenDate.toDateString();
+
+  const yesterday = new Date();
+  yesterday.setDate(now.getDate() - 1);
+  const isYesterday = yesterday.toDateString() === seenDate.toDateString();
+
+  const timeString = seenDate.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  if (isToday) {
+    return `last seen today at ${timeString}`;
+  } else if (isYesterday) {
+    return `last seen yesterday at ${timeString}`;
+  } else if (now.getFullYear() === seenDate.getFullYear()) {
+    return `last seen ${seenDate.toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "short",
+    })} at ${timeString}`;
+  } else {
+    return `last seen ${seenDate.toLocaleDateString("en-US", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    })} at ${timeString}`;
+  }
 };

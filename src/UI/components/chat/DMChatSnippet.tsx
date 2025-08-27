@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router";
+import { Link } from "react-router";
 import {
   Check,
   CheckCheck,
@@ -21,10 +21,8 @@ export default function DMChatSnippet({ userChat }: { userChat: UserChatT }) {
     unread_messages_count: unreadMessagesCount,
   } = userChat;
 
-  const location = useLocation();
-
   const isActive =
-    location.pathname.slice(location.pathname.lastIndexOf("/") + 1) ===
+    useSelector((state: RootState) => state.userChats.activeChatIdent) ===
     chatIdent;
 
   const dispatch = useDispatch();
@@ -134,11 +132,12 @@ export default function DMChatSnippet({ userChat }: { userChat: UserChatT }) {
 
   return (
     <Link
-      to={`/chats/${chatIdent}`}
+      to={chatIdent}
+      relative="route"
       className={`block p-3 hover:bg-gray-50 transition-colors ${
         isActive ? "bg-blue-50 border-r-2 border-blue-500" : ""
       }`}
-      onClick={() => dispatch(setActiveChat(userChat))}
+      onClick={() => dispatch(setActiveChat(userChat.chat_ident))}
       preventScrollReset
     >
       <div className="flex items-center space-x-3">

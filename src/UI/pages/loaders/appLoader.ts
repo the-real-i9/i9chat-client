@@ -3,7 +3,7 @@ import { appAxios } from "../../../utils/utils";
 
 import store from "../../../store";
 import { setUser } from "../../../store/userSlice";
-import { setUserChats } from "../../../store/userChatsSlice";
+import { setActiveChat, setUserChats } from "../../../store/userChatsSlice";
 import { setUserToChatHistoryMap } from "../../../store/userToChatHistoryMapSlice";
 import type { ChatHistoryEntryT, UserChatT } from "../../../types/appTypes";
 
@@ -54,6 +54,16 @@ export default async function appLoader() {
     store.dispatch(
       setUserToChatHistoryMap(Object.fromEntries(userChatHistory)),
     );
+
+    const activeChat = location.pathname.match(
+      /(?<=\/chats\/)(([0-9a-f]+-)+[0-9a-f]+|\w+)(?=\/*.*)/g,
+    );
+
+    if (activeChat) {
+      store.dispatch(setActiveChat(activeChat[0]));
+    }
+
+    console.log("apploader ran");
 
     return null;
   } catch (error: any) {

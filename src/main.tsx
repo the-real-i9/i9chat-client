@@ -6,8 +6,8 @@ import { Provider } from "react-redux";
 import "./index.css";
 import store from "./store/index";
 
-import AppLayout from "./UI/pages/AppLayout.tsx";
-import SigninPage from "./UI/pages/SigninPage.tsx";
+import AppLayout from "./UI/pages/AppLayout";
+import SigninPage from "./UI/pages/SigninPage";
 import ChatsTab from "./UI/tabs/ChatsTab.tsx";
 import SignupPage from "./UI/pages/SignupPage.tsx";
 import AuthLayout from "./UI/pages/AuthLayout.tsx";
@@ -25,6 +25,9 @@ const router = createBrowserRouter([
     Component: AppLayout,
     HydrateFallback: AppLoadingUI,
     loader: appLoader,
+    shouldRevalidate: ({ nextUrl }) => {
+      return nextUrl.pathname === "/";
+    },
     children: [
       {
         index: true,

@@ -1,5 +1,11 @@
-import { useState, useEffect, type MouseEvent } from "react";
-import { Outlet, Link, useLocation, useNavigate } from "react-router";
+import { useState, useEffect, type MouseEvent, useMemo } from "react";
+import {
+  Outlet,
+  Link,
+  useLocation,
+  useNavigate,
+  useRevalidator,
+} from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import {
   MessageCircle,
@@ -25,8 +31,8 @@ export default function AppLayout() {
 
   const user = useSelector((state: RootState) => state.user.value);
 
-  const activeChat = useSelector(
-    (state: RootState) => state.userChats.activeChat,
+  const activeChatIdent = useSelector(
+    (state: RootState) => state.userChats.activeChatIdent,
   );
 
   const location = useLocation();
@@ -34,6 +40,7 @@ export default function AppLayout() {
   const navigate = useNavigate();
 
   /* WebSocket Setup */
+
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:8000/api/app/ws");
 
@@ -90,7 +97,7 @@ export default function AppLayout() {
   const navigationItems = [
     {
       name: "Chats",
-      path: `/chats${activeChat?.chat_ident ? `/${activeChat.chat_ident}` : ""}`,
+      path: `/chats${activeChatIdent ? `/${activeChatIdent}` : ""}`,
       icon: MessageCircle,
     },
     {
