@@ -64,3 +64,26 @@ export const formatLastSeen = (lastSeen: number) => {
     })} at ${timeString}`;
   }
 };
+
+export function getErrorMsg(errCode: string) {
+  switch (errCode) {
+    case "uERR_4000":
+      return "account already exists";
+    case "uERR_4001":
+      return "incorrect code";
+    case "uERR_4002":
+      return "code expired! re-submit email";
+    case "uERR_4003":
+      return "username unavailable";
+    case "uERR_4004":
+      return "account doesn't exist";
+    case "uERR_4005":
+      return "incorrect token";
+    case "uERR_4006":
+      return "token expired! re-submit email";
+    case "uERR_4007":
+      return "incorrect credentials";
+    case "uERR_4008":
+      return "media upload timed out";
+  }
+}

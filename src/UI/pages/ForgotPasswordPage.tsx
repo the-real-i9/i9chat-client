@@ -1,111 +1,119 @@
-import { useState } from "react"
-import { Link, useNavigate } from "react-router"
-import { appAxios } from "../../utils/utils"
+import { useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router";
+import { appAxios } from "../../utils/utils";
 
 export default function ForgotPasswordPage() {
-  const [stage, setStage] = useState(1) // 1: email, 2: confirmation code, 3: new password
+  const [stage, setStage] = useState(1); // 1: email, 2: confirmation code, 3: new password
 
-  const [email, setEmail] = useState("")
-  const [token, setToken] = useState("")
-  const [newPassword, setNewPassword] = useState("")
-  const [confirmNewPassword, setConfirmNewPassword] = useState("")
+  const [email, setEmail] = useState("");
+  const [token, setToken] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   /**
-   * @param {Event} e 
+   * @param {Event} e
    */
-  const handleEmailSubmit = async (e) => {
-    e.preventDefault()
+  const handleEmailSubmit = async (e: FormEvent) => {
+    e.preventDefault();
     if (!email) {
-      setError("Please enter your email address")
-      return
+      setError("Please enter your email address");
+      return;
     }
 
-    setIsLoading(true)
-    setError("")
+    setIsLoading(true);
+    setError("");
 
     try {
       await appAxios.post("/auth/forgot_password/request_password_reset", {
         email,
-      })
-      setStage(2)
-    } catch (error) {
-      if (error.status === 404) setError(error.response.data)
+      });
+      setStage(2);
+    } catch (error: any) {
+      if (error.response.data.startsWith("uERR")) setError(error.response.data);
       else {
-        console.error(error)
-        setError("dev: debug")
+        console.error(error);
+        setError("dev: debug");
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   /**
-   * @param {Event} e 
+   * @param {Event} e
    */
-  const handleCodeSubmit = async (e) => {
-    e.preventDefault()
+  const handleCodeSubmit = async (e: FormEvent) => {
+    e.preventDefault();
     if (!token) {
-      setError("Please enter the confrmation token")
-      return
+      setError("Please enter the confrmation token");
+      return;
     }
 
-    setIsLoading(true)
-    setError("")
+    setIsLoading(true);
+    setError("");
 
     try {
-      await appAxios.post("/auth/forgot_password/confirm_email", { token })
-      setStage(3)
-    } catch (error) {
-      if (error.status === 400) setError(error.response.data)
+      await appAxios.post("/auth/forgot_password/confirm_email", { token });
+      setStage(3);
+    } catch (error: any) {
+      if (error.response.data.startsWith("uERR")) setError(error.response.data);
       else {
-        console.error(error)
-        setError("dev: debug")
+        console.error(error);
+        setError("dev: debug");
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   /**
-   * @param {Event} e 
+   * @param {Event} e
    */
-  const handlePasswordSubmit = async (e) => {
-    e.preventDefault()
+  const handlePasswordSubmit = async (e: any) => {
+    e.preventDefault();
     if (!newPassword || !confirmNewPassword) {
-      setError("Please fill in both password fields")
-      return
+      setError("Please fill in both password fields");
+      return;
     }
 
     if (newPassword !== confirmNewPassword) {
-      setError("Passwords do not match")
-      return
+      setError("Passwords do not match");
+      return;
     }
 
-    setIsLoading(true)
-    setError("")
+    if (newPassword.length < 8) {
+      setError("Password too short. Minimum of 8 characters");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
 
     try {
       const resp = await appAxios.post("/auth/forgot_password/reset_password", {
         newPassword,
         confirmNewPassword,
-      })
+      });
 
       // Redirect to signin with success message
       navigate("/signin", {
         state: { message: resp.data.msg },
-      })
-    } catch (error) {
-      console.error(error)
-      setError("dev: debug")
+      });
+    } catch (error: any) {
+      if (error.response.data.startsWith("uERR")) setError(error.response.data);
+      else {
+        console.error(error);
+        setError("dev: debug");
+      }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const renderStage1 = () => (
     <div>
@@ -139,7 +147,7 @@ export default function ForgotPasswordPage() {
         </button>
       </form>
     </div>
-  )
+  );
 
   const renderStage2 = () => (
     <div>
@@ -185,7 +193,7 @@ export default function ForgotPasswordPage() {
         </button>
       </form>
     </div>
-  )
+  );
 
   const renderStage3 = () => (
     <div>
@@ -240,7 +248,7 @@ export default function ForgotPasswordPage() {
         </button>
       </form>
     </div>
-  )
+  );
 
   return (
     <div className="forgot-password-page h-screen flex justify-center items-center">
@@ -263,5 +271,5 @@ export default function ForgotPasswordPage() {
         </p>
       </div>
     </div>
-  )
+  );
 }

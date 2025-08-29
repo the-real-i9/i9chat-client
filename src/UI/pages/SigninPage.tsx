@@ -34,7 +34,7 @@ export default function SigninPage() {
       dispatch(setUser(resp.data.user));
       navigate("/", { replace: true });
     } catch (error: any) {
-      if (error.status == 404) setError(error.response.data);
+      if (error.response.data.startsWith("uERR")) setError(error.response.data);
       else {
         console.error(error);
         setError("dev: debug");
