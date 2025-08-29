@@ -8,7 +8,7 @@ import {
   clearRecentUsers,
 } from "../../../store/recentUsersSlice";
 import type { RootState } from "../../../store";
-import type { UserT } from "../../../types/appTypes";
+import { type UserT } from "../../../types/appTypes";
 
 export default function NewChatPane({ onClose }: { onClose: () => void }) {
   const recentUsers = useSelector(
@@ -17,7 +17,14 @@ export default function NewChatPane({ onClose }: { onClose: () => void }) {
 
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState<UserT | null>(null);
-  const [isLoading, setLoading] = useState(false);
+  const [isSearching, setSearching] = useState(false);
+
+  const searchMode = searchInput.trim() !== "";
+
+  if (searchInput !== searchResult?.username && searchResult) {
+    setSearchResult(null);
+  }
+
   const [error, setError] = useState("");
 
   const dispatch = useDispatch();
@@ -27,18 +34,29 @@ export default function NewChatPane({ onClose }: { onClose: () => void }) {
 
     // check if already in list (Redux handles duplication too)
     try {
-      setLoading(true);
+      setSearching(true);
       setError("");
 
-      const resp = await appAxios.get(`/app/user/find_user?eu=${searchInput}`);
-      const foundUser = resp.data;
+      const existingUserIndex = recentUsers.findIndex(
+        (u) => u.username === searchInput.trim(),
+      );
 
-      dispatch(addRecentUser(foundUser));
-      setSearchResult(foundUser);
+      if (existingUserIndex < 0) {
+        const resp = await appAxios.get(
+          `/app/user/find_user?eu=${searchInput}`,
+        );
+
+        const foundUser = resp.data;
+
+        dispatch(addRecentUser(foundUser));
+        setSearchResult(foundUser);
+      } else {
+        setSearchResult(recentUsers[existingUserIndex]);
+      }
     } catch (err: any) {
       setError("User not found");
     } finally {
-      setLoading(false);
+      setSearching(false);
     }
   };
 
@@ -48,7 +66,7 @@ export default function NewChatPane({ onClose }: { onClose: () => void }) {
       className="group flex items-center p-3 hover:bg-gray-50 border-b"
     >
       {/* Profile picture with presence indicator */}
-      <div className="relative w-12 h-12 mr-3">
+      <div className="w-12 h-12 mr-3">
         {user.profile_pic_url ? (
           <img
             src={user.profile_pic_url}
@@ -60,11 +78,6 @@ export default function NewChatPane({ onClose }: { onClose: () => void }) {
             {user.username.charAt(0)?.toUpperCase()}
           </span>
         )}
-        <span
-          className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${
-            user.presence === "online" ? "bg-green-500" : "bg-gray-400"
-          }`}
-        />
       </div>
 
       {/* User info */}
@@ -74,12 +87,14 @@ export default function NewChatPane({ onClose }: { onClose: () => void }) {
       </div>
 
       {/* Remove button (hover only) */}
-      <button
-        onClick={() => dispatch(removeRecentUser(user.username))}
-        className="opacity-0 group-hover:opacity-100 transition-opacity"
-      >
-        <X size={16} className="text-gray-400 hover:text-red-500" />
-      </button>
+      {searchMode || (
+        <button
+          onClick={() => dispatch(removeRecentUser(user.username))}
+          className="opacity-0 group-hover:opacity-100 transition-opacity"
+        >
+          <X size={16} className="text-gray-400 hover:text-red-500" />
+        </button>
+      )}
     </div>
   );
 
@@ -104,7 +119,7 @@ export default function NewChatPane({ onClose }: { onClose: () => void }) {
         />
         <button
           onClick={handleSearch}
-          disabled={isLoading}
+          disabled={isSearching}
           className="p-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
         >
           <Search size={16} />
@@ -112,7 +127,7 @@ export default function NewChatPane({ onClose }: { onClose: () => void }) {
       </div>
 
       {/* Error */}
-      {error && (
+      {error && searchMode && (
         <div className="p-3 text-sm text-red-600 border-b bg-red-50">
           {error}
         </div>
@@ -120,8 +135,10 @@ export default function NewChatPane({ onClose }: { onClose: () => void }) {
 
       {/* Results / Recent users */}
       <div className="flex-1 overflow-y-auto">
-        {searchResult
-          ? renderSnippet(searchResult)
+        {searchMode
+          ? searchResult
+            ? renderSnippet(searchResult)
+            : null
           : recentUsers.map((u) => renderSnippet(u))}
       </div>
 

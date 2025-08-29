@@ -4,12 +4,12 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../../../store";
 
 export default function ChatXView() {
-  const chatIdent = useSelector(
+  const activeChatIdent = useSelector(
     (state: RootState) => state.userChats.activeChatIdent,
   );
 
   const chatInfo = useSelector((state: RootState) =>
-    state.userChats.value.find((uc) => uc.chat_ident === chatIdent),
+    state.userChats.value.find((uc) => uc.chat_ident === activeChatIdent),
   );
 
   return chatInfo ? (
