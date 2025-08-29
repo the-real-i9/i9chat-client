@@ -40,7 +40,10 @@ export default function GroupChatXView({ chatInfo }: { chatInfo: UserChatT }) {
 
     if (entryType === "group activity") {
       return (
-        <div className="flex my-4 justify-center text-xs/[1.55]">
+        <div
+          key={entry.created_at}
+          className="flex my-4 justify-center text-xs/[1.55]"
+        >
           <p className="bg-gray-200 px-1.5 py-1 rounded-md max-w-sm text-center">
             {entry.info}
           </p>
