@@ -1,19 +1,21 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { UserChatT } from "../types/appTypes";
 
-const initialState: {
+interface UserChatsStateT {
   value: UserChatT[];
   activeChatIdent: string;
-} = { value: [], activeChatIdent: "" };
+}
+
+const initialState: UserChatsStateT = { value: [], activeChatIdent: "" };
 
 const userChatsSlice = createSlice({
   name: "userChats",
   initialState,
   reducers: {
-    setUserChats: (state, action) => {
+    setUserChats: (state, action: PayloadAction<UserChatT[]>) => {
       state.value = action.payload;
     },
-    setActiveChat: (state, action) => {
+    setActiveChat: (state, action: PayloadAction<string>) => {
       state.activeChatIdent = action.payload;
     },
     setUserPresence: (state, action) => {

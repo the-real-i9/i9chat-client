@@ -2,6 +2,7 @@ interface UserT {
   username: string;
   email?: string;
   profile_pic_url?: string;
+  bio?: string;
   presence?: "online" | "offline";
   last_seen?: number;
 }
