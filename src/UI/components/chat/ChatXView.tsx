@@ -4,13 +4,9 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../../../store";
 
 export default function ChatXView() {
-  const activeChatIdent = useSelector(
-    (state: RootState) => state.userChats.activeChatIdent,
-  );
-
-  const chatInfo = useSelector((state: RootState) =>
-    state.userChats.value.find((uc) => uc.chat_ident === activeChatIdent),
-  );
+  const chatInfo = useSelector(
+    (state: RootState) => state.userChats.activeChat,
+  ); 
 
   return chatInfo ? (
     chatInfo.chat_type === "DM" ? (

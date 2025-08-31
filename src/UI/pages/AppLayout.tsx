@@ -1,10 +1,9 @@
-import { useState, useEffect, type MouseEvent, useMemo } from "react";
+import { useState, useEffect, type MouseEvent } from "react";
 import {
   Outlet,
   Link,
   useLocation,
-  useNavigate,
-  useRevalidator,
+  useNavigate
 } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -32,7 +31,7 @@ export default function AppLayout() {
   const user = useSelector((state: RootState) => state.user.value);
 
   const activeChatIdent = useSelector(
-    (state: RootState) => state.userChats.activeChatIdent,
+    (state: RootState) => state.userChats.activeChat?.chat_ident,
   );
 
   const location = useLocation();

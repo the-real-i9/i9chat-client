@@ -22,7 +22,7 @@ export default function DMChatSnippet({ userChat }: { userChat: UserChatT }) {
   } = userChat;
 
   const isActive =
-    useSelector((state: RootState) => state.userChats.activeChatIdent) ===
+    useSelector((state: RootState) => state.userChats.activeChat?.chat_ident) ===
     chatIdent;
 
   const dispatch = useDispatch();
@@ -137,7 +137,7 @@ export default function DMChatSnippet({ userChat }: { userChat: UserChatT }) {
       className={`block p-3 hover:bg-gray-50 transition-colors ${
         isActive ? "bg-blue-50 border-r-2 border-blue-500" : ""
       }`}
-      onClick={() => dispatch(setActiveChat(userChat.chat_ident))}
+      onClick={() => dispatch(setActiveChat(userChat))}
       preventScrollReset
     >
       <div className="flex items-center space-x-3">

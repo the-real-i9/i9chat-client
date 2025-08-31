@@ -3,10 +3,10 @@ import type { UserChatT } from "../types/appTypes";
 
 interface UserChatsStateT {
   value: UserChatT[];
-  activeChatIdent: string;
+  activeChat: UserChatT | null;
 }
 
-const initialState: UserChatsStateT = { value: [], activeChatIdent: "" };
+const initialState: UserChatsStateT = { value: [], activeChat: null };
 
 const userChatsSlice = createSlice({
   name: "userChats",
@@ -15,24 +15,35 @@ const userChatsSlice = createSlice({
     setUserChats: (state, action: PayloadAction<UserChatT[]>) => {
       state.value = action.payload;
     },
-    setActiveChat: (state, action: PayloadAction<string>) => {
-      state.activeChatIdent = action.payload;
+    setActiveChat: (state, action: PayloadAction<UserChatT>) => {
+      state.activeChat = action.payload;
     },
     setUserPresence: (state, action) => {
       const { username, presence, last_seen = undefined } = action.payload;
 
-      const oldUserChats = state.value;
+      const userChats = state.value;
 
-      const indexOfUser = oldUserChats.findIndex(
-        (ouc) => ouc.partner?.username === username,
+      const indexOfUser = userChats.findIndex(
+        (uc) => uc.partner?.username === username,
       );
 
-      if (indexOfUser > -1 && oldUserChats[indexOfUser].partner) {
-        oldUserChats[indexOfUser].partner.presence = presence;
-        oldUserChats[indexOfUser].partner.last_seen = last_seen;
+      if (indexOfUser > -1 && userChats[indexOfUser].partner) {
+        userChats[indexOfUser].partner.presence = presence;
+        userChats[indexOfUser].partner.last_seen = last_seen;
       }
 
-      state.value = oldUserChats;
+      state.value = userChats;
+
+      // -----------------
+      
+      const activeChat = state.activeChat
+
+      if (activeChat?.partner && activeChat.partner.username === username) {
+        activeChat.partner.presence = presence;
+        activeChat.partner.last_seen = last_seen;
+      }
+
+      state.activeChat = activeChat
     },
   },
 });

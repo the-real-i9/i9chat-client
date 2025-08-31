@@ -8,12 +8,15 @@ import {
   clearRecentUsers,
 } from "../../../store/recentUsersSlice";
 import type { RootState } from "../../../store";
-import { type UserT } from "../../../types/appTypes";
+import { type UserChatT, type UserT } from "../../../types/appTypes";
+import { setActiveChat } from "../../../store/userChatsSlice";
+import { useNavigate } from "react-router";
 
 export default function NewChatPane({ onClose }: { onClose: () => void }) {
   const recentUsers = useSelector(
     (state: RootState) => state.recentUsers.value,
   );
+
 
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState<UserT | null>(null);
@@ -60,10 +63,25 @@ export default function NewChatPane({ onClose }: { onClose: () => void }) {
     }
   };
 
+  const navigate = useNavigate()
+
+  const handleUserClick = (user: UserT) => {
+    const userChat: UserChatT = {
+      chat_type: "DM",
+      chat_ident: user.username,
+      unread_messages_count: 0,
+      partner: user,
+    }
+
+    dispatch(setActiveChat(userChat))
+    navigate(`../${user.username}`, { relative: "path" })
+  } 
+
   const renderSnippet = (user: UserT) => (
     <div
       key={user.username}
       className="group flex items-center p-3 hover:bg-gray-50 border-b"
+      onClick={() => handleUserClick(user)}
     >
       {/* Profile picture with presence indicator */}
       <div className="w-12 h-12 mr-3">
