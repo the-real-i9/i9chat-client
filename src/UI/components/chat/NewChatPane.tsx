@@ -10,7 +10,6 @@ import {
 import type { RootState } from "../../../store";
 import { type UserChatT, type UserT } from "../../../types/appTypes";
 import { setActiveChat } from "../../../store/userChatsSlice";
-import { useNavigate } from "react-router";
 
 export default function NewChatPane({ onClose }: { onClose: () => void }) {
   const recentUsers = useSelector(
@@ -63,8 +62,6 @@ export default function NewChatPane({ onClose }: { onClose: () => void }) {
     }
   };
 
-  const navigate = useNavigate()
-
   const handleUserClick = (user: UserT) => {
     const userChat: UserChatT = {
       chat_type: "DM",
@@ -74,13 +71,12 @@ export default function NewChatPane({ onClose }: { onClose: () => void }) {
     }
 
     dispatch(setActiveChat(userChat))
-    navigate(`../${user.username}`, { relative: "path" })
   } 
 
   const renderSnippet = (user: UserT) => (
     <div
       key={user.username}
-      className="group flex items-center p-3 hover:bg-gray-50 border-b"
+      className="group flex items-center p-3 hover:bg-gray-50 border-b cursor-pointer"
       onClick={() => handleUserClick(user)}
     >
       {/* Profile picture with presence indicator */}

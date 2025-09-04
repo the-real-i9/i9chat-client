@@ -1,23 +1,17 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, redirect, RouterProvider } from "react-router";
+import { createBrowserRouter, RouterProvider } from "react-router";
 import { Provider } from "react-redux";
 
 import "./index.css";
 import store from "./store/index";
-
 import AppLayout from "./UI/pages/AppLayout";
 import SigninPage from "./UI/pages/SigninPage";
-import ChatsTab from "./UI/tabs/ChatsTab.tsx";
 import SignupPage from "./UI/pages/SignupPage.tsx";
 import AuthLayout from "./UI/pages/AuthLayout.tsx";
-import ChatXView from "./UI/components/chat/ChatXView.tsx";
 import AppLoadingUI from "./UI/components/AppLoadingUI.tsx";
 import appLoader from "./UI/pages/loaders/appLoader.ts";
 import ForgotPasswordPage from "./UI/pages/ForgotPasswordPage.tsx";
-import MomentsTab from "./UI/tabs/MomentsTab.tsx";
-import CallsTab from "./UI/tabs/CallsTab.tsx";
-import FriendsTab from "./UI/tabs/FriendsTab.tsx";
 
 const router = createBrowserRouter([
   {
@@ -28,34 +22,6 @@ const router = createBrowserRouter([
     shouldRevalidate: ({ nextUrl }) => {
       return nextUrl.pathname === "/";
     },
-    children: [
-      {
-        index: true,
-        loader: () => redirect("/chats"),
-      },
-      {
-        path: "chats",
-        Component: ChatsTab,
-        children: [
-          {
-            path: ":chatIdent",
-            Component: ChatXView,
-          },
-        ],
-      },
-      {
-        path: "moments",
-        Component: MomentsTab,
-      },
-      {
-        path: "calls",
-        Component: CallsTab,
-      },
-      {
-        path: "friends",
-        Component: FriendsTab,
-      },
-    ],
   },
   {
     Component: AuthLayout,

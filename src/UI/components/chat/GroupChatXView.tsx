@@ -16,7 +16,7 @@ import MessageInput from "./MessageInput";
 export default function GroupChatXView({ chatInfo }: { chatInfo: UserChatT }) {
   const chatHistory = useSelector(
     (state: RootState) => state.userToChatHistoryMap.value[chatInfo.chat_ident],
-  );
+  ) || [];
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 

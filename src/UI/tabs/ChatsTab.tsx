@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Outlet } from "react-router";
 import { Plus } from "lucide-react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store";
@@ -7,6 +6,7 @@ import type { RootState } from "../../store";
 import DMChatSnippet from "../components/chat/DMChatSnippet";
 import GroupChatSnippet from "../components/chat/GroupChatSnippet";
 import NewChatPane from "../components/chat/NewChatPane";
+import ChatXView from "../components/chat/ChatXView";
 
 export default function ChatsTab() {
   const userChats = useSelector((state: RootState) => state.userChats.value);
@@ -44,7 +44,7 @@ export default function ChatsTab() {
 
       {/* Right Column */}
       <div className="flex-1 bg-gray-50">
-        <Outlet />
+        <ChatXView />
       </div>
     </div>
   );

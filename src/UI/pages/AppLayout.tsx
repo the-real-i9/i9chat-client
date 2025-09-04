@@ -1,8 +1,5 @@
-import { useState, useEffect, type MouseEvent } from "react";
+import { useState, type MouseEvent } from "react";
 import {
-  Outlet,
-  Link,
-  useLocation,
   useNavigate
 } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
@@ -10,7 +7,6 @@ import {
   MessageCircle,
   Clock,
   Phone,
-  Users,
   Settings,
   LogOut,
   User,
@@ -18,62 +14,26 @@ import {
 
 import { setUser } from "../../store/userSlice";
 import { appAxios } from "../../utils/utils";
-import OutgoingWSMessageService from "../../services/realtimeServices/OutgoingWSMsgService";
-import IncomingWSMessageService from "../../services/realtimeServices/IncomingWSMsgService";
 
 import type { RootState } from "../../store";
 import { setActiveChat, setUserChats } from "../../store/userChatsSlice";
 import { setUserToChatHistoryMap } from "../../store/userToChatHistoryMapSlice";
+import { setActiveTab } from "../../store/appTabsSlice";
+import ChatsTab from "../tabs/ChatsTab";
+import MomentsTab from "../tabs/MomentsTab";
+import CallsTab from "../tabs/CallsTab";
+import RealtimeService from "../../services/realtimeService";
 
 export default function AppLayout() {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
+  const activeTab = useSelector((state: RootState) => state.appTabs.activeTab)
+
   const user = useSelector((state: RootState) => state.user.value);
 
-  const activeChatIdent = useSelector(
-    (state: RootState) => state.userChats.activeChat?.chat_ident,
-  );
-
-  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  /* WebSocket Setup */
-
-  useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8000/api/app/ws");
-
-    const onOpen = () => console.log("WebSocket connected");
-    const onError = () => console.log("WebSocket error");
-    const onClose = (ev: CloseEvent) =>
-      console.log(
-        "WebSocket closed. Code: %d. Reason: %s. Normal closure: %s",
-        ev.code,
-        ev.reason,
-        ev.wasClean,
-      );
-
-    OutgoingWSMessageService.init(ws);
-
-    const onMessage = (ev: MessageEvent) => {
-      IncomingWSMessageService.foward(ev.data);
-    };
-
-    ws.addEventListener("open", onOpen);
-    ws.addEventListener("error", onError);
-    ws.addEventListener("close", onClose);
-    ws.addEventListener("message", onMessage);
-
-    return () => {
-      ws.close(1000);
-
-      ws.removeEventListener("open", onOpen);
-      ws.removeEventListener("error", onError);
-      ws.removeEventListener("close", onClose);
-      ws.removeEventListener("message", onMessage);
-    };
-  }, []);
-
+  
   const handleLogout = async (e: MouseEvent) => {
     e.preventDefault();
 
@@ -82,10 +42,13 @@ export default function AppLayout() {
     try {
       const resp = await appAxios.get("/app/user/signout");
 
+      dispatch(setActiveTab("Chats"))
       dispatch(setUser(null));
       dispatch(setUserChats([]));
       dispatch(setActiveChat(null));
       dispatch(setUserToChatHistoryMap({}));
+
+      RealtimeService.terminate()
 
       navigate("/signin", { state: { msg: resp.data } });
     } catch (error) {
@@ -93,61 +56,59 @@ export default function AppLayout() {
     }
   };
 
-  const navigationItems = [
+  const appTabs = [
     {
       name: "Chats",
-      path: `/chats${activeChatIdent ? `/${activeChatIdent}` : ""}`,
       icon: MessageCircle,
     },
     {
       name: "Moments",
-      path: "/moments",
       icon: Clock,
     },
     {
       name: "Calls",
-      path: "/calls",
       icon: Phone,
     },
-    {
-      name: "Friends",
-      path: "/friends",
-      icon: Users,
-    },
+    
   ];
 
-  const isActivePath = (path: string) => {
-    return location.pathname.startsWith(path);
-  };
+  const renderActiveTab = () => {
+    switch (activeTab) {
+      case "Moments":
+        return <MomentsTab />
+      case "Calls":
+        return <CallsTab />
+      default:
+        return <ChatsTab />
+    }
+  }
 
   return (
     <div className="app-layout h-screen flex">
       {/* Sidebar */}
       <div className="w-16 bg-gray-100 flex flex-col justify-between items-center py-4">
-        {/* Navigation Items */}
+        {/* App Tabs */}
         <div className="flex flex-col space-y-4">
-          {navigationItems.map((item) => {
+          {appTabs.map((item) => {
             const Icon = item.icon;
-            const isActive = isActivePath(item.path);
+            const isActive = activeTab === item.name;
 
             return (
-              <Link
-                key={item.name}
-                to={item.path}
+              <button
+                key={item.name} 
                 className={`p-3 rounded-lg transition-colors group relative ${
                   isActive
                     ? "bg-blue-600 text-white"
                     : "text-gray-600 hover:bg-gray-200"
                 }`}
-                title={item.name}
-                preventScrollReset
+                onClick={() => dispatch(setActiveTab(item.name))}
               >
                 <Icon size={20} />
                 {/* Tooltip */}
                 <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                   {item.name}
                 </div>
-              </Link>
+              </button>
             );
           })}
         </div>
@@ -211,7 +172,7 @@ export default function AppLayout() {
 
       {/* Main Content */}
       <div className="flex-1 flex">
-        <Outlet />
+        {renderActiveTab()}
       </div>
     </div>
   );

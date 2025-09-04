@@ -17,7 +17,7 @@ import MessageInput from "./MessageInput";
 export default function DMChatXView({ chatInfo }: { chatInfo: UserChatT }) {
   const chatHistory = useSelector(
     (state: RootState) => state.userToChatHistoryMap.value[chatInfo.chat_ident],
-  );
+  ) || [];
 
   const historyEndRef = useRef<HTMLDivElement>(null);
 

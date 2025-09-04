@@ -3,9 +3,10 @@ import { appAxios } from "../../../utils/utils";
 
 import store from "../../../store";
 import { setUser } from "../../../store/userSlice";
-import { setActiveChat, setUserChats } from "../../../store/userChatsSlice";
+import { setUserChats } from "../../../store/userChatsSlice";
 import { setUserToChatHistoryMap } from "../../../store/userToChatHistoryMapSlice";
 import type { ChatHistoryEntryT, UserChatT } from "../../../types/appTypes";
+import RealtimeService from "../../../services/realtimeService";
 
 export default async function appLoader() {
   try {
@@ -55,15 +56,7 @@ export default async function appLoader() {
       setUserToChatHistoryMap(Object.fromEntries(userChatHistory)),
     );
 
-    const activeChat = location.pathname.match(
-      /(?<=\/chats\/)(([0-9a-f]+-)+[0-9a-f]+|\w+)(?=\/*.*)/g,
-    );
-
-    if (activeChat) {
-      store.dispatch(setActiveChat(activeChat[0]));
-    }
-
-    console.log("apploader ran");
+    RealtimeService.init(new WebSocket("ws://localhost:8000/api/app/ws"));
 
     return null;
   } catch (error: any) {

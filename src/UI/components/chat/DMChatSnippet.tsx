@@ -1,4 +1,3 @@
-import { Link } from "react-router";
 import {
   Check,
   CheckCheck,
@@ -131,14 +130,11 @@ export default function DMChatSnippet({ userChat }: { userChat: UserChatT }) {
   };
 
   return (
-    <Link
-      to={chatIdent}
-      relative="route"
-      className={`block p-3 hover:bg-gray-50 transition-colors ${
+    <div
+      className={`block p-3 hover:bg-gray-50 transition-colors cursor-pointer ${
         isActive ? "bg-blue-50 border-r-2 border-blue-500" : ""
       }`}
       onClick={() => dispatch(setActiveChat(userChat))}
-      preventScrollReset
     >
       <div className="flex items-center space-x-3">
         {/* Profile Picture */}
@@ -183,6 +179,6 @@ export default function DMChatSnippet({ userChat }: { userChat: UserChatT }) {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
