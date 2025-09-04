@@ -1,5 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { UserChatT } from "../types/appTypes";
+import { update } from "idb-keyval";
 
 interface UserChatsStateT {
   value: UserChatT[];
@@ -34,16 +35,34 @@ const userChatsSlice = createSlice({
 
       state.value = userChats;
 
+      // update clientDB
+      update<UserChatT[]>("my_chats", (ucs) => {
+        if (!ucs) return [];
+
+        const userChats = ucs;
+
+        const indexOfUser = userChats.findIndex(
+          (uc) => uc.partner?.username === username,
+        );
+
+        if (indexOfUser > -1 && userChats[indexOfUser].partner) {
+          userChats[indexOfUser].partner.presence = presence;
+          userChats[indexOfUser].partner.last_seen = last_seen;
+        }
+
+        return userChats;
+      });
+
       // -----------------
-      
-      const activeChat = state.activeChat
+
+      const activeChat = state.activeChat;
 
       if (activeChat?.partner && activeChat.partner.username === username) {
         activeChat.partner.presence = presence;
         activeChat.partner.last_seen = last_seen;
       }
 
-      state.activeChat = activeChat
+      state.activeChat = activeChat;
     },
   },
 });

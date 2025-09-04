@@ -16,7 +16,6 @@ export default function NewChatPane({ onClose }: { onClose: () => void }) {
     (state: RootState) => state.recentUsers.value,
   );
 
-
   const [searchInput, setSearchInput] = useState("");
   const [searchResult, setSearchResult] = useState<UserT | null>(null);
   const [isSearching, setSearching] = useState(false);
@@ -77,7 +76,10 @@ export default function NewChatPane({ onClose }: { onClose: () => void }) {
     <div
       key={user.username}
       className="group flex items-center p-3 hover:bg-gray-50 border-b cursor-pointer"
-      onClick={() => handleUserClick(user)}
+      onClick={() => {
+        handleUserClick(user)
+        onClose()
+      }}
     >
       {/* Profile picture with presence indicator */}
       <div className="w-12 h-12 mr-3">

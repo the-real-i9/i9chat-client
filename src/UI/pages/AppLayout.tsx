@@ -1,7 +1,5 @@
 import { useState, type MouseEvent } from "react";
-import {
-  useNavigate
-} from "react-router";
+import { useNavigate } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import {
   MessageCircle,
@@ -11,6 +9,7 @@ import {
   LogOut,
   User,
 } from "lucide-react";
+import { clear } from "idb-keyval";
 
 import { setUser } from "../../store/userSlice";
 import { appAxios } from "../../utils/utils";
@@ -27,13 +26,13 @@ import RealtimeService from "../../services/realtimeService";
 export default function AppLayout() {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
-  const activeTab = useSelector((state: RootState) => state.appTabs.activeTab)
+  const activeTab = useSelector((state: RootState) => state.appTabs.activeTab);
 
   const user = useSelector((state: RootState) => state.user.value);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const handleLogout = async (e: MouseEvent) => {
     e.preventDefault();
 
@@ -42,13 +41,15 @@ export default function AppLayout() {
     try {
       const resp = await appAxios.get("/app/user/signout");
 
-      dispatch(setActiveTab("Chats"))
+      dispatch(setActiveTab("Chats"));
       dispatch(setUser(null));
       dispatch(setUserChats([]));
       dispatch(setActiveChat(null));
       dispatch(setUserToChatHistoryMap({}));
 
-      RealtimeService.terminate()
+      RealtimeService.terminate();
+
+      await clear();
 
       navigate("/signin", { state: { msg: resp.data } });
     } catch (error) {
@@ -69,19 +70,18 @@ export default function AppLayout() {
       name: "Calls",
       icon: Phone,
     },
-    
   ];
 
   const renderActiveTab = () => {
     switch (activeTab) {
       case "Moments":
-        return <MomentsTab />
+        return <MomentsTab />;
       case "Calls":
-        return <CallsTab />
+        return <CallsTab />;
       default:
-        return <ChatsTab />
+        return <ChatsTab />;
     }
-  }
+  };
 
   return (
     <div className="app-layout h-screen flex">
@@ -95,7 +95,7 @@ export default function AppLayout() {
 
             return (
               <button
-                key={item.name} 
+                key={item.name}
                 className={`p-3 rounded-lg transition-colors group relative ${
                   isActive
                     ? "bg-blue-600 text-white"
@@ -104,10 +104,6 @@ export default function AppLayout() {
                 onClick={() => dispatch(setActiveTab(item.name))}
               >
                 <Icon size={20} />
-                {/* Tooltip */}
-                <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                  {item.name}
-                </div>
               </button>
             );
           })}
@@ -171,9 +167,7 @@ export default function AppLayout() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex">
-        {renderActiveTab()}
-      </div>
+      <div className="flex-1 flex">{renderActiveTab()}</div>
     </div>
   );
 }
