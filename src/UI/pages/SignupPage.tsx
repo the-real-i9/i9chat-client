@@ -1,112 +1,115 @@
-import { useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router";
-import { useDispatch } from "react-redux";
-import { setUser } from "../../store/userSlice";
-import { appAxios } from "../../utils/utils";
+import { useState, type FormEvent } from "react"
+import { Link, useNavigate } from "react-router"
+import { useDispatch } from "react-redux"
+import { setUser } from "../../store/userSlice"
+import { appAxios, getErrorMsg } from "../../utils/utils"
 
 export default function SignupPage() {
-  const [stage, setStage] = useState(1); // 1: email, 2: verify code, 3: set credentials
+  const [stage, setStage] = useState(1) // 1: email, 2: verify code, 3: set credentials
 
-  const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState("")
+  const [code, setCode] = useState("")
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleEmailSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!email) {
-      setError("Please enter your email address");
-      return;
+      setError("Please enter your email address")
+      return
     }
 
-    setIsLoading(true);
-    setError("");
+    setIsLoading(true)
+    setError("")
 
     try {
-      await appAxios.post("/auth/signup/request_new_account", { email });
-      setStage(2);
+      await appAxios.post("/auth/signup/request_new_account", { email })
+      setStage(2)
     } catch (error: any) {
-      if (error.response.data.startsWith("uERR")) setError(error.response.data);
+      if (error.response.data.startsWith("uERR"))
+        setError(getErrorMsg(error.response.data))
       else {
-        console.error(error);
-        setError("dev: debug");
+        console.error(error)
+        setError("dev: debug")
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleCodeSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!code) {
-      setError("Please enter the verification code");
-      return;
+      setError("Please enter the verification code")
+      return
     }
 
-    setIsLoading(true);
-    setError("");
+    setIsLoading(true)
+    setError("")
 
     try {
-      await appAxios.post("/auth/signup/verify_email", { code });
-      setStage(3);
+      await appAxios.post("/auth/signup/verify_email", { code })
+      setStage(3)
     } catch (error: any) {
-      if (error.response.data.startsWith("uERR")) setError(error.response.data);
+      if (error.response.data.startsWith("uERR"))
+        setError(getErrorMsg(error.response.data))
       else {
-        console.error(error);
-        setError("dev: debug");
+        console.error(error)
+        setError("dev: debug")
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleCredentialsSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!username || !password || !confirmPassword) {
-      setError("Please fill in all fields");
-      return;
+      setError("Please fill in all fields")
+      return
     }
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
+      setError("Passwords do not match")
+      return
     }
 
     if (password.length < 8) {
-      setError("Password too short. Minimum of 8 characters");
-      return;
+      setError("Password too short. Minimum of 8 characters")
+      return
     }
 
-    setIsLoading(true);
-    setError("");
+    setIsLoading(true)
+    setError("")
 
     try {
       const resp = await appAxios.post("/auth/signup/register_user", {
         username,
         password,
-      });
+      })
 
-      console.log(resp);
+      console.log(resp)
 
-      dispatch(setUser(resp.data.user));
-      navigate("/", { replace: true });
+      dispatch(setUser(resp.data.user))
+      navigate("/", { replace: true })
     } catch (error: any) {
-      if (error.response.data.startsWith("uERR")) setError(error.response.data);
+      if (error.response.data.startsWith("uERR"))
+        setError(getErrorMsg(error.response.data))
       else {
-        console.error(error);
-        setError("dev: debug");
+        console.error(error)
+        setError("dev: debug")
       }
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const renderStage1 = () => (
     <div>
@@ -140,7 +143,7 @@ export default function SignupPage() {
         </button>
       </form>
     </div>
-  );
+  )
 
   const renderStage2 = () => (
     <div>
@@ -184,7 +187,7 @@ export default function SignupPage() {
         </button>
       </form>
     </div>
-  );
+  )
 
   const renderStage3 = () => (
     <div>
@@ -253,7 +256,7 @@ export default function SignupPage() {
         </button>
       </form>
     </div>
-  );
+  )
 
   return (
     <div className="signup-page h-screen flex justify-center items-center">
@@ -276,5 +279,5 @@ export default function SignupPage() {
         </p>
       </div>
     </div>
-  );
+  )
 }

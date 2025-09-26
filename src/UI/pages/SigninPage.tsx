@@ -1,47 +1,48 @@
-import { useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router";
-import { appAxios } from "../../utils/utils";
-import { useDispatch } from "react-redux";
-import { setUser } from "../../store/userSlice";
+import { useState, type FormEvent } from "react"
+import { Link, useNavigate } from "react-router"
+import { appAxios, getErrorMsg } from "../../utils/utils"
+import { useDispatch } from "react-redux"
+import { setUser } from "../../store/userSlice"
 
 export default function SigninPage() {
-  const [identifier, setIdentifier] = useState("");
-  const [password, setPassword] = useState("");
+  const [identifier, setIdentifier] = useState("")
+  const [password, setPassword] = useState("")
 
-  const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [isLoading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (!identifier || !password) {
-      setError("Please fill in all fields");
-      return;
+      setError("Please fill in all fields")
+      return
     }
 
-    setLoading(true);
-    setError("");
+    setLoading(true)
+    setError("")
 
     try {
       const resp = await appAxios.post("/auth/signin", {
         emailOrUsername: identifier,
         password,
-      });
+      })
 
-      dispatch(setUser(resp.data.user));
-      navigate("/", { replace: true });
+      dispatch(setUser(resp.data.user))
+      navigate("/", { replace: true })
     } catch (error: any) {
-      if (error.response.data.startsWith("uERR")) setError(error.response.data);
+      if (error.response.data.startsWith("uERR"))
+        setError(getErrorMsg(error.response.data))
       else {
-        console.error(error);
-        setError("dev: debug");
+        console.error(error)
+        setError("dev: debug")
       }
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <div className="signin-page h-screen flex justify-center items-center">
@@ -116,5 +117,5 @@ export default function SigninPage() {
         </p>
       </div>
     </div>
-  );
+  )
 }

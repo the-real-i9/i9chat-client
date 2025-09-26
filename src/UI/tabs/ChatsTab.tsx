@@ -10,6 +10,8 @@ import ChatXView from "../components/chat/ChatXView"
 export default function ChatsTab() {
   const userChats = useSelector((state: RootState) => state.userChats.value)
 
+  const chatInfo = useSelector((state: RootState) => state.userChats.activeChat)
+
   const [showNewChat, setShowNewChat] = useState(false)
 
   return (
@@ -39,7 +41,7 @@ export default function ChatsTab() {
 
       {/* Right Column */}
       <div className="flex-1 bg-gray-50">
-        <ChatXView />
+        {chatInfo && <ChatXView chatInfo={chatInfo} />}
       </div>
     </div>
   )

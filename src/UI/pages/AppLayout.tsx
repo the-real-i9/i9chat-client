@@ -1,6 +1,6 @@
-import { useState, type MouseEvent } from "react";
-import { useNavigate } from "react-router";
-import { useSelector, useDispatch } from "react-redux";
+import { useState, type MouseEvent } from "react"
+import { useNavigate } from "react-router"
+import { useSelector, useDispatch } from "react-redux"
 import {
   MessageCircle,
   Clock,
@@ -8,54 +8,54 @@ import {
   Settings,
   LogOut,
   User,
-} from "lucide-react";
-import { clear } from "idb-keyval";
+} from "lucide-react"
+import { clear } from "idb-keyval"
 
-import { setUser } from "../../store/userSlice";
-import { appAxios } from "../../utils/utils";
+import { setUser } from "../../store/userSlice"
+import { appAxios } from "../../utils/utils"
 
-import type { RootState } from "../../store";
-import { setActiveChat, setUserChats } from "../../store/userChatsSlice";
-import { setUserToChatHistoryMap } from "../../store/userToChatHistoryMapSlice";
-import { setActiveTab } from "../../store/appTabsSlice";
-import ChatsTab from "../tabs/ChatsTab";
-import MomentsTab from "../tabs/MomentsTab";
-import CallsTab from "../tabs/CallsTab";
-import RealtimeService from "../../services/realtimeService";
+import type { RootState } from "../../store"
+import { setActiveChat, setUserChats } from "../../store/userChatsSlice"
+import { setChatIdentToHistoryMap } from "../../store/chatIdentToHistoryMapSlice"
+import { setActiveTab } from "../../store/appTabsSlice"
+import ChatsTab from "../tabs/ChatsTab"
+import MomentsTab from "../tabs/MomentsTab"
+import CallsTab from "../tabs/CallsTab"
+import RealtimeService from "../../services/realtimeService"
 
 export default function AppLayout() {
-  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false)
 
-  const activeTab = useSelector((state: RootState) => state.appTabs.activeTab);
+  const activeTab = useSelector((state: RootState) => state.appTabs.activeTab)
 
-  const user = useSelector((state: RootState) => state.user.value);
+  const clientUser = useSelector((state: RootState) => state.user.value)
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const handleLogout = async (e: MouseEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    setShowUserMenu(false);
+    setShowUserMenu(false)
 
     try {
-      const resp = await appAxios.get("/app/user/signout");
+      const resp = await appAxios.get("/app/user/signout")
 
-      dispatch(setActiveTab("Chats"));
-      dispatch(setUser(null));
-      dispatch(setUserChats([]));
-      dispatch(setActiveChat(null));
-      dispatch(setUserToChatHistoryMap({}));
+      dispatch(setActiveTab("Chats"))
+      dispatch(setUser(null))
+      dispatch(setUserChats([]))
+      dispatch(setActiveChat(null))
+      dispatch(setChatIdentToHistoryMap({}))
 
-      RealtimeService.terminate();
+      RealtimeService.terminate()
 
-      await clear();
+      await clear()
 
-      navigate("/signin", { state: { msg: resp.data } });
+      navigate("/signin", { state: { msg: resp.data } })
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   const appTabs = [
     {
@@ -70,18 +70,18 @@ export default function AppLayout() {
       name: "Calls",
       icon: Phone,
     },
-  ];
+  ]
 
   const renderActiveTab = () => {
     switch (activeTab) {
       case "Moments":
-        return <MomentsTab />;
+        return <MomentsTab />
       case "Calls":
-        return <CallsTab />;
+        return <CallsTab />
       default:
-        return <ChatsTab />;
+        return <ChatsTab />
     }
-  };
+  }
 
   return (
     <div className="app-layout h-screen flex">
@@ -90,8 +90,8 @@ export default function AppLayout() {
         {/* App Tabs */}
         <div className="flex flex-col space-y-4">
           {appTabs.map((item) => {
-            const Icon = item.icon;
-            const isActive = activeTab === item.name;
+            const Icon = item.icon
+            const isActive = activeTab === item.name
 
             return (
               <button
@@ -105,7 +105,7 @@ export default function AppLayout() {
               >
                 <Icon size={20} />
               </button>
-            );
+            )
           })}
         </div>
 
@@ -116,10 +116,10 @@ export default function AppLayout() {
             className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition-colors"
             title="Account"
           >
-            {user?.profile_pic_url ? (
+            {clientUser?.profile_pic_url ? (
               <img
-                src={user.profile_pic_url}
-                alt={user.username}
+                src={clientUser.profile_pic_url}
+                alt={clientUser.username}
                 className="w-full h-full rounded-full object-cover"
               />
             ) : (
@@ -139,8 +139,10 @@ export default function AppLayout() {
               {/* Menu */}
               <div className="absolute bottom-full left-0 mb-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
                 <div className="p-3 border-b border-gray-200">
-                  <p className="font-medium text-gray-900">{user?.username}</p>
-                  <p className="text-sm text-gray-500">{user?.email}</p>
+                  <p className="font-medium text-gray-900">
+                    {clientUser?.username}
+                  </p>
+                  <p className="text-sm text-gray-500">{clientUser?.email}</p>
                 </div>
 
                 <div className="py-1">
@@ -169,5 +171,5 @@ export default function AppLayout() {
       {/* Main Content */}
       <div className="flex-1 flex">{renderActiveTab()}</div>
     </div>
-  );
+  )
 }

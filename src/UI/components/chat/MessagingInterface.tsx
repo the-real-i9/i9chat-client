@@ -1,26 +1,34 @@
-import { useState } from "react";
-import TextMessagingUI from "./messagingInterfaces/TextMsgInterface";
+import { useState } from "react"
+import TextMessagingInterface from "./messagingInterfaces/TextMessagingInterface"
+import type { RepliedMsgT, UserChatT } from "../../../types/appTypes"
 
 type Props = {
-  chatType: "DM" | "group";
-  chatIdent: string;
+  chatInfo: UserChatT
+  replyMode: { repMsg: RepliedMsgT } | false
 }
 
 export default function MessagingInterface(p: Props) {
-  const [msgIntf, setMsgIntf] = useState("text")
-  
-  const renderInterface = () => {
-    switch (msgIntf) {
-      case "text":
-        return <TextMessagingUI chatType={p.chatType} chatIdent={p.chatIdent} />
-    
+  const [msgType, setMsgType] = useState("text")
+
+  const switchMsgInterface = (msgType: string) => {
+    setMsgType(msgType)
+  }
+
+  const renderMsgInterface = () => {
+    switch (msgType) {
+      case "voice":
+      case "photo":
+      case "video":
+      case "file":
       default:
-        break;
+        return (
+          <TextMessagingInterface
+            switchMsgInterface={switchMsgInterface}
+            {...p}
+          />
+        )
     }
   }
 
-  return (
-    <div>MessagingInterface</div>
-  )
+  return renderMsgInterface()
 }
-

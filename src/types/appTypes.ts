@@ -1,72 +1,74 @@
 type UserT = {
-  username: string;
-  email?: string;
-  profile_pic_url?: string;
-  bio?: string;
-  presence?: "online" | "offline";
-  last_seen?: number;
+  username: string
+  email?: string
+  profile_pic_url?: string
+  bio?: string
+  presence?: "online" | "offline"
+  last_seen?: number
 }
 
 type GroupInfoT = {
-  id: string;
-  name: string;
-  description: string;
-  picture_url: string;
+  id: string
+  name: string
+  description: string
+  picture_url: string
 }
 
 type UserChatT = {
-  chat_type: "DM" | "group";
-  is_typing?: boolean;
-  typing_users?: string[];
-  chat_ident: string;
-  unread_messages_count: number;
-  partner?: UserT;
-  group_info?: GroupInfoT;
+  chat_type: "DM" | "group"
+  is_typing?: boolean
+  typing_users?: string[]
+  chat_ident: string
+  unread_messages_count: number
+  partner?: UserT
+  group_info?: GroupInfoT
 }
 
 type MessageContentT = {
-  type: "text" | "voice" | "audio" | "video" | "photo" | "file";
+  type: "text" | "voice" | "audio" | "video" | "photo" | "file"
   props: {
-    text_content?: string;
-    duration?: number;
-    caption?: string;
-    name?: string;
+    text_content?: string
+    duration?: number
+    caption?: string
+    name?: string
 
     // you can access these from API responses,
     // but, don't send them in an API request
-    size?: number;
-    url?: string;
-    mime_type?: string;
-    extension?: string;
-  };
+    size?: number
+    url?: string
+    mime_type?: string
+    extension?: string
+  }
+}
+
+type RepliedMsgT = {
+  id: string
+  content: MessageContentT
+  sender_username: string
+  is_own?: boolean
 }
 
 type ChatHistoryEntryT = {
-  chat_hist_entry_type: "message" | "reply" | "reaction" | "group activity";
-  created_at: number;
+  chat_hist_entry_type: "message" | "reply" | "reaction" | "group activity"
+  created_at: number
 
-  id?: string;
-  content?: MessageContentT;
-  delivery_status?: "sent" | "delivered" | "read" | "pending";
-  sender?: UserT;
+  id?: string
+  content?: MessageContentT
+  delivery_status?: "sent" | "delivered" | "read" | "pending"
+  sender?: UserT
   reactions?: {
-    reactor: UserT;
-    reaction: string;
-    at: number;
-  }[];
+    reactor: UserT
+    reaction: string
+    at: number
+  }[]
 
-  replied_to?: {
-    id: string;
-    content: MessageContentT;
-    sender_username: string;
-    is_own?: boolean;
-  };
+  replied_to?: RepliedMsgT
 
-  is_own?: boolean;
+  is_own?: boolean
 
-  reaction?: string;
+  reaction?: string
 
-  info?: string;
+  info?: string
 }
 
-export type { UserT, UserChatT, ChatHistoryEntryT, GroupInfoT };
+export type { UserT, UserChatT, ChatHistoryEntryT, GroupInfoT, RepliedMsgT }

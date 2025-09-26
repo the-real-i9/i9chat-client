@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Phone, Video, MoreVertical } from "lucide-react"
 
 import TextMessage from "./messageSnippets/TextMessage"
@@ -8,21 +8,23 @@ import VoiceMessage from "./messageSnippets/VoiceMessage";
 import VideoMessage from "./messageSnippets/VideoMessage";
 import AudioMessage from "./messageSnippets/AudioMessage";
 import { FileMessage } from "./messageSnippets/FileMessage";*/
-import type { ChatHistoryEntryT } from "../../../types/appTypes"
+import type {
+  ChatHistoryEntryT,
+  RepliedMsgT,
+  UserChatT,
+} from "../../../types/appTypes"
 import { formatLastSeen } from "../../../utils/utils"
 import { useSelector } from "react-redux"
 import type { RootState } from "../../../store"
 import MessagingInterface from "./MessagingInterface"
 
-export default function ChatXView() {
-  const chatInfo = useSelector((state: RootState) => state.userChats.activeChat)
-
+export default function ChatXView({ chatInfo }: { chatInfo: UserChatT }) {
   if (!chatInfo) return null
 
   const chatHistory =
     useSelector(
       (state: RootState) =>
-        state.userToChatHistoryMap.value[chatInfo.chat_ident]
+        state.chatIdentToHistoryMap.value[chatInfo.chat_ident]
     ) || []
 
   const historyEndRef = useRef<HTMLDivElement>(null)
@@ -34,6 +36,14 @@ export default function ChatXView() {
   useEffect(() => {
     scrollToBottom()
   }, [])
+
+  const [replyMode, setReplyMode] = useState<{ repMsg: RepliedMsgT } | false>(
+    false
+  )
+
+  const activateReplyMode = (repliedMsg: RepliedMsgT) => {
+    setReplyMode({ repMsg: repliedMsg })
+  }
 
   const renderChatHistoryEntry = (entry: ChatHistoryEntryT) => {
     const entryType = entry.chat_hist_entry_type
@@ -223,10 +233,7 @@ export default function ChatXView() {
       </div>
 
       {/* Messaging UI */}
-      <MessagingInterface
-        chatType={chatInfo.chat_type}
-        chatIdent={chatInfo.chat_ident}
-      />
+      <MessagingInterface chatInfo={chatInfo} replyMode={replyMode} />
     </div>
   )
 }

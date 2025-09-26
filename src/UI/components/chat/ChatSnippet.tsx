@@ -35,19 +35,19 @@ export default function ChatSnippet({ userChat }: { userChat: UserChatT }) {
   const groupName = groupInfo?.name,
     pictureUrl = groupInfo?.picture_url
 
-  const userChatHistory = useSelector(
-    (state: RootState) => state.userToChatHistoryMap.value[chatIdent]
+  const chatHistory = useSelector(
+    (state: RootState) => state.chatIdentToHistoryMap.value[chatIdent]
   )
 
   // get lastChatHistoryEntry from state
-  const lastChatHistoryEntry = userChatHistory?.at(-1)
+  const lastChatHistoryEntry = chatHistory?.at(-1)
 
   const lchEntryType = lastChatHistoryEntry?.chat_hist_entry_type
 
   // get last message timestamp from state
   const lastMessageTimestamp = (() => {
-    for (let i = userChatHistory.length; i > 0; i--) {
-      const histEntry = userChatHistory[i - 1]
+    for (let i = chatHistory.length; i > 0; i--) {
+      const histEntry = chatHistory[i - 1]
 
       if (
         histEntry.chat_hist_entry_type === "message" ||
