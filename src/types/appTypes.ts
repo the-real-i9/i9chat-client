@@ -1,4 +1,4 @@
-interface UserT {
+type UserT = {
   username: string;
   email?: string;
   profile_pic_url?: string;
@@ -7,14 +7,14 @@ interface UserT {
   last_seen?: number;
 }
 
-interface GroupInfoT {
+type GroupInfoT = {
   id: string;
   name: string;
   description: string;
   picture_url: string;
 }
 
-interface UserChatT {
+type UserChatT = {
   chat_type: "DM" | "group";
   is_typing?: boolean;
   typing_users?: string[];
@@ -24,7 +24,7 @@ interface UserChatT {
   group_info?: GroupInfoT;
 }
 
-interface MessageContentT {
+type MessageContentT = {
   type: "text" | "voice" | "audio" | "video" | "photo" | "file";
   props: {
     text_content?: string;
@@ -41,7 +41,7 @@ interface MessageContentT {
   };
 }
 
-interface ChatHistoryEntryT {
+type ChatHistoryEntryT = {
   chat_hist_entry_type: "message" | "reply" | "reaction" | "group activity";
   created_at: number;
 

@@ -3,7 +3,7 @@ import { get, clear, update } from "idb-keyval";
 
 import type { UserT } from "../types/appTypes";
 
-interface RecentUsersStateT {
+type RecentUsersStateT = {
   value: UserT[];
 }
 

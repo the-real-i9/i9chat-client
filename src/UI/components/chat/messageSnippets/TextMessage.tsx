@@ -1,6 +1,6 @@
 import MessageWrapper from "./MessageWrapper";
 
-interface Props {
+type Props = {
   isOwn: boolean;
   timestamp: number;
   deliveryStatus: "pending" | "sent" | "delivered" | "read";

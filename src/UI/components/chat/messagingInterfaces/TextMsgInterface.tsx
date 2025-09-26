@@ -1,12 +1,12 @@
 import { useState, type FormEvent } from "react";
 import { Send, Paperclip, Mic } from "lucide-react";
 
-interface Props {
+type Props = {
   chatType: "DM" | "group";
   chatIdent: string;
 }
 
-export default function MessageInput(p: Props) {
+export default function TextMessagingUI(p: Props) {
   const [messageInput, setMessageInput] = useState("");
 
   const handleSendMessage = (e: FormEvent) => {

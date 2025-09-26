@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Upload } from "lucide-react";
 import MessageWrapper from "./MessageWrapper";
 
-interface Props {
+type Props = {
   isOwn: boolean;
   timestamp: number;
   deliveryStatus: "pending" | "sent" | "delivered" | "read";

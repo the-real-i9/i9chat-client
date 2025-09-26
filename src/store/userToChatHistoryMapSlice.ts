@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { ChatHistoryEntryT } from "../types/appTypes";
 
-interface UserToChatHistoryMapState {
+type UserToChatHistoryMapState = {
   value: Record<string, ChatHistoryEntryT[]>;
 }
 

@@ -2,7 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { UserChatT } from "../types/appTypes";
 import { update } from "idb-keyval";
 
-interface UserChatsStateT {
+type UserChatsStateT = {
   value: UserChatT[];
   activeChat: UserChatT | null;
 }

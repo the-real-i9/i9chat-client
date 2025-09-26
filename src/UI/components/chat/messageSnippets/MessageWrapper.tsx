@@ -1,7 +1,7 @@
 import { Check, CheckCheck } from "lucide-react";
 import type { ReactNode } from "react";
 
-interface Props {
+type Props = {
   isOwn: boolean;
   timestamp: number;
   deliveryStatus: "pending" | "sent" | "delivered" | "read";

@@ -1,7 +1,7 @@
 
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-interface AppTabsStateT {
+type AppTabsStateT = {
   activeTab: string;
 }
 

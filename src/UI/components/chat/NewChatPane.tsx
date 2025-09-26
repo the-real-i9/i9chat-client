@@ -67,19 +67,17 @@ export default function NewChatPane({ onClose }: { onClose: () => void }) {
       chat_ident: user.username,
       unread_messages_count: 0,
       partner: user,
-    }
+    };
 
-    dispatch(setActiveChat(userChat))
-  } 
+    dispatch(setActiveChat(userChat));
+    onClose();
+  };
 
   const renderSnippet = (user: UserT) => (
     <div
       key={user.username}
       className="group flex items-center p-3 hover:bg-gray-50 border-b cursor-pointer"
-      onClick={() => {
-        handleUserClick(user)
-        onClose()
-      }}
+      onClick={() => handleUserClick(user)}
     >
       {/* Profile picture with presence indicator */}
       <div className="w-12 h-12 mr-3">
@@ -105,7 +103,10 @@ export default function NewChatPane({ onClose }: { onClose: () => void }) {
       {/* Remove button (hover only) */}
       {searchMode || (
         <button
-          onClick={() => dispatch(removeRecentUser(user.username))}
+          onClick={(ev) => {
+            ev.stopPropagation();
+            dispatch(removeRecentUser(user.username));
+          }}
           className="opacity-0 group-hover:opacity-100 transition-opacity"
         >
           <X size={16} className="text-gray-400 hover:text-red-500" />

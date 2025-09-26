@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { UserT } from "../types/appTypes";
 
-interface UserStateT {
+type UserStateT = {
   value: UserT | null;
 }
 

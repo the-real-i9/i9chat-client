@@ -1,17 +1,16 @@
-import { useState } from "react";
-import { Plus } from "lucide-react";
-import { useSelector } from "react-redux";
-import type { RootState } from "../../store";
+import { useState } from "react"
+import { Plus } from "lucide-react"
+import { useSelector } from "react-redux"
+import type { RootState } from "../../store"
 
-import DMChatSnippet from "../components/chat/DMChatSnippet";
-import GroupChatSnippet from "../components/chat/GroupChatSnippet";
-import NewChatPane from "../components/chat/NewChatPane";
-import ChatXView from "../components/chat/ChatXView";
+import NewChatPane from "../components/chat/NewChatPane"
+import ChatSnippet from "../components/chat/ChatSnippet"
+import ChatXView from "../components/chat/ChatXView"
 
 export default function ChatsTab() {
-  const userChats = useSelector((state: RootState) => state.userChats.value);
+  const userChats = useSelector((state: RootState) => state.userChats.value)
 
-  const [showNewChat, setShowNewChat] = useState(false);
+  const [showNewChat, setShowNewChat] = useState(false)
 
   return (
     <div className="chats-tab h-full w-full flex relative">
@@ -22,13 +21,9 @@ export default function ChatsTab() {
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          {userChats.map((chat) =>
-            chat.chat_type === "DM" ? (
-              <DMChatSnippet key={chat.chat_ident} userChat={chat} />
-            ) : (
-              <GroupChatSnippet key={chat.chat_ident} userChat={chat} />
-            ),
-          )}
+          {userChats.map((chat) => (
+            <ChatSnippet key={chat.chat_ident} userChat={chat} />
+          ))}
         </div>
 
         {/* Floating new chat button */}
@@ -47,5 +42,5 @@ export default function ChatsTab() {
         <ChatXView />
       </div>
     </div>
-  );
+  )
 }
