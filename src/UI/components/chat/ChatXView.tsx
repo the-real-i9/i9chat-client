@@ -14,9 +14,11 @@ import type {
   UserChatT,
 } from "../../../types/appTypes"
 import { formatLastSeen } from "../../../utils/utils"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import type { RootState } from "../../../store"
 import MessagingInterface from "./MessagingInterface"
+import RealtimeService from "../../../services/realtimeService"
+import { updateMessageDeliveryStatus } from "../../../store/chatIdentToHistoryMapSlice"
 
 export default function ChatXView({ chatInfo }: { chatInfo: UserChatT }) {
   if (!chatInfo) return null
@@ -33,9 +35,59 @@ export default function ChatXView({ chatInfo }: { chatInfo: UserChatT }) {
     historyEndRef.current?.scrollIntoView()
   }
 
+  const dispatch = useDispatch()
+
+  const ackMsgRead = () => {
+    for (let i = chatHistory.length; i > 0; i--) {
+      const histEntry = chatHistory[i - 1]
+
+      if (
+        (histEntry.chat_hist_entry_type === "message" ||
+          histEntry.chat_hist_entry_type === "reply") &&
+        histEntry.is_own === false
+      ) {
+        if (histEntry.delivery_status === "read") return
+
+        const chatType = chatInfo.chat_type
+
+        RealtimeService.send(
+          {
+            action:
+              chatType === "DM"
+                ? "ack dm chat message read"
+                : "ack group chat message read",
+            data: {
+              [chatType === "DM" ? "partnerUsername" : "groupId"]:
+                chatType === "DM"
+                  ? chatInfo.partner?.username
+                  : chatInfo.group_info?.id,
+              msgId: histEntry.id,
+              at: Date.now(),
+            },
+          },
+          () => {}
+        )
+
+        dispatch(
+          updateMessageDeliveryStatus({
+            chatIdent:
+              (chatType === "DM"
+                ? chatInfo.partner?.username
+                : chatInfo.group_info?.id) || "",
+            chatType,
+            msgId: histEntry.id || "",
+            deliveryStatus: "read",
+          })
+        )
+      }
+    }
+  }
+
   useEffect(() => {
     scrollToBottom()
-  }, [])
+
+    ackMsgRead()
+  }, [chatHistory.length])
 
   const [replyMode, setReplyMode] = useState<{ repMsg: RepliedMsgT } | false>(
     false

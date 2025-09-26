@@ -1,5 +1,8 @@
 import store from "../store"
-import { appendChatHistoryEntry } from "../store/chatIdentToHistoryMapSlice"
+import {
+  appendChatHistoryEntry,
+  updateMessageDeliveryStatus,
+} from "../store/chatIdentToHistoryMapSlice"
 import { setUserPresence } from "../store/userChatsSlice"
 
 const onOpen = () => console.log("WebSocket connected")
@@ -62,6 +65,38 @@ export default class RealtimeService {
             chatIdent: data.sender.username,
             chatType: "DM",
             newHistoryEntry: data,
+          })
+        )
+
+        RealtimeService.send(
+          {
+            action: "ack dm chat message delivered",
+            data: {
+              partnerUsername: data.sender.username,
+              msgId: data.id,
+              at: Date.now(),
+            },
+          },
+          () => {}
+        )
+        break
+      case "dm chat message delivered":
+        store.dispatch(
+          updateMessageDeliveryStatus({
+            chatIdent: data.partner_username,
+            chatType: "DM",
+            msgId: data.msg_id,
+            deliveryStatus: "delivered",
+          })
+        )
+        break
+      case "dm chat message read":
+        store.dispatch(
+          updateMessageDeliveryStatus({
+            chatIdent: data.partner_username,
+            chatType: "DM",
+            msgId: data.msg_id,
+            deliveryStatus: "read",
           })
         )
         break

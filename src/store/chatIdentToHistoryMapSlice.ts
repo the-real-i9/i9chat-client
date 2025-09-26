@@ -78,6 +78,48 @@ const chatIdentToHistoryMapSlice = createSlice({
         }
       )
     },
+    updateMessageDeliveryStatus: (
+      state,
+      action: PayloadAction<{
+        chatIdent: string
+        chatType: "DM" | "group"
+        msgId: string
+        deliveryStatus: "delivered" | "read"
+      }>
+    ) => {
+      const { chatIdent, chatType, msgId, deliveryStatus } = action.payload
+
+      const chatHistory = state.value[chatIdent]
+
+      for (let i = chatHistory.length; i > 0; i--) {
+        const histEntry = chatHistory[i - 1]
+        if (histEntry.id === msgId) {
+          chatHistory[i - 1].delivery_status = deliveryStatus
+          break
+        }
+      }
+
+      state.value[chatIdent] = chatHistory
+
+      update<ChatHistoryEntryT[]>(
+        `${chatType === "DM" ? "dm_chat" : "group_chat"}/${chatIdent}/history`,
+        (ch) => {
+          if (!ch) return []
+
+          const chatHistory = ch
+
+          for (let i = chatHistory.length; i > 0; i--) {
+            const histEntry = chatHistory[i - 1]
+            if (histEntry.id === msgId) {
+              chatHistory[i - 1].delivery_status = deliveryStatus
+              break
+            }
+          }
+
+          return chatHistory
+        }
+      )
+    },
   },
 })
 
@@ -85,5 +127,6 @@ export const {
   setChatIdentToHistoryMap,
   appendChatHistoryEntry,
   updateNewlySentMsgEntryAfterServerReply,
+  updateMessageDeliveryStatus,
 } = chatIdentToHistoryMapSlice.actions
 export default chatIdentToHistoryMapSlice.reducer
