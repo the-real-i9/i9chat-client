@@ -19,6 +19,7 @@ import type { RootState } from "../../../store"
 import MessagingInterface from "./MessagingInterface"
 import RealtimeService from "../../../services/realtimeService"
 import { updateMessageDeliveryStatus } from "../../../store/chatIdentToHistoryMapSlice"
+import { updateUnreadMessagesCount } from "../../../store/userChatsSlice"
 
 export default function ChatXView({ chatInfo }: { chatInfo: UserChatT }) {
   if (!chatInfo) return null
@@ -75,6 +76,16 @@ export default function ChatXView({ chatInfo }: { chatInfo: UserChatT }) {
             deliveryStatus: "read",
           })
         )
+
+        dispatch(
+          updateUnreadMessagesCount({
+            chatIdent:
+              (chatType === "DM"
+                ? chatInfo.partner?.username
+                : chatInfo.group_info?.id) || "",
+            byVal: -1,
+          })
+        )
       }
     }
   }
@@ -86,14 +97,14 @@ export default function ChatXView({ chatInfo }: { chatInfo: UserChatT }) {
   }, [chatHistory.length])
 
   const [replyMode, setReplyMode] = useState<
-    { repMsg: ReplyTargetMsgT } | false
+    { replyTargetMsg: ReplyTargetMsgT } | false
   >(false)
 
   const activateReplyMode = (entry: ChatHistoryEntryT) => {
     if (!entry.content) return
 
     setReplyMode({
-      repMsg: {
+      replyTargetMsg: {
         id: entry.id || "",
         sender_username: entry.sender?.username || "",
         is_own: entry.is_own,

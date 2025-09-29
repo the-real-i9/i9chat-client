@@ -1,10 +1,10 @@
 import { useState } from "react"
 import TextMessagingInterface from "./messagingInterfaces/TextMessagingInterface"
-import type { RepliedMsgT, UserChatT } from "../../../types/appTypes"
+import type { ReplyTargetMsgT, UserChatT } from "../../../types/appTypes"
 
 type Props = {
   chatInfo: UserChatT
-  replyMode: { repMsg: RepliedMsgT } | false
+  replyMode: { replyTargetMsg: ReplyTargetMsgT } | false
   deactivateReplyMode: () => void
 }
 

@@ -8,6 +8,7 @@ import {
   updateNewlySentMsgEntryAfterServerReply,
 } from "../../../../store/chatIdentToHistoryMapSlice"
 import type { RootState } from "../../../../store"
+import { addNewUserChat } from "../../../../store/userChatsSlice"
 
 type Props = {
   chatInfo: UserChatT
@@ -59,6 +60,17 @@ export default function TextMessagingInterface(p: Props) {
     )
 
     const chatType = p.chatInfo.chat_type
+
+    dispatch(
+      addNewUserChat({
+        chat_ident: p.chatInfo.chat_ident,
+        chat_type: chatType,
+        unread_messages_count: p.chatInfo.unread_messages_count,
+        [chatType === "DM" ? "partner" : "group_info"]:
+          chatType === "DM" ? p.chatInfo.partner : p.chatInfo.group_info,
+      })
+    )
+
     RealtimeService.send(
       {
         action:
@@ -96,6 +108,7 @@ export default function TextMessagingInterface(p: Props) {
     )
 
     setMessageInput("")
+    p.deactivateReplyMode()
   }
 
   return (

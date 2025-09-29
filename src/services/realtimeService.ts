@@ -3,7 +3,11 @@ import {
   appendChatHistoryEntry,
   updateMessageDeliveryStatus,
 } from "../store/chatIdentToHistoryMapSlice"
-import { setUserPresence } from "../store/userChatsSlice"
+import {
+  addNewUserChat,
+  setUserPresence,
+  updateUnreadMessagesCount,
+} from "../store/userChatsSlice"
 
 const onOpen = () => console.log("WebSocket connected")
 const onError = () => console.log("WebSocket error")
@@ -65,6 +69,22 @@ export default class RealtimeService {
             chatIdent: data.sender.username,
             chatType: "DM",
             newHistoryEntry: data,
+          })
+        )
+
+        store.dispatch(
+          addNewUserChat({
+            chat_ident: data.sender.username,
+            chat_type: "DM",
+            unread_messages_count: 0,
+            partner: data.sender,
+          })
+        )
+
+        store.dispatch(
+          updateUnreadMessagesCount({
+            chatIdent: data.sender.username,
+            byVal: 1,
           })
         )
 
