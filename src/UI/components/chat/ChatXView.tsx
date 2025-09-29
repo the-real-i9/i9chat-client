@@ -10,7 +10,7 @@ import AudioMessage from "./messageSnippets/AudioMessage";
 import { FileMessage } from "./messageSnippets/FileMessage";*/
 import type {
   ChatHistoryEntryT,
-  RepliedMsgT,
+  ReplyTargetMsgT,
   UserChatT,
 } from "../../../types/appTypes"
 import { formatLastSeen } from "../../../utils/utils"
@@ -41,11 +41,7 @@ export default function ChatXView({ chatInfo }: { chatInfo: UserChatT }) {
     for (let i = chatHistory.length; i > 0; i--) {
       const histEntry = chatHistory[i - 1]
 
-      if (
-        (histEntry.chat_hist_entry_type === "message" ||
-          histEntry.chat_hist_entry_type === "reply") &&
-        histEntry.is_own === false
-      ) {
+      if (histEntry.chat_hist_entry_type === "message" && !histEntry.is_own) {
         if (histEntry.delivery_status === "read") return
 
         const chatType = chatInfo.chat_type
@@ -89,21 +85,30 @@ export default function ChatXView({ chatInfo }: { chatInfo: UserChatT }) {
     ackMsgRead()
   }, [chatHistory.length])
 
-  const [replyMode, setReplyMode] = useState<{ repMsg: RepliedMsgT } | false>(
-    false
-  )
+  const [replyMode, setReplyMode] = useState<
+    { repMsg: ReplyTargetMsgT } | false
+  >(false)
 
-  const activateReplyMode = (repliedMsg: RepliedMsgT) => {
-    setReplyMode({ repMsg: repliedMsg })
+  const activateReplyMode = (entry: ChatHistoryEntryT) => {
+    if (!entry.content) return
+
+    setReplyMode({
+      repMsg: {
+        id: entry.id || "",
+        sender_username: entry.sender?.username || "",
+        is_own: entry.is_own,
+        content: entry.content,
+      },
+    })
+  }
+
+  const deactivateReplyMode = () => {
+    setReplyMode(false)
   }
 
   const renderChatHistoryEntry = (entry: ChatHistoryEntryT) => {
     const entryType = entry.chat_hist_entry_type
-    if (
-      entryType !== "message" &&
-      entryType !== "reply" &&
-      entryType !== "group activity"
-    ) {
+    if (entryType !== "message" && entryType !== "group activity") {
       return null
     }
 
@@ -121,7 +126,7 @@ export default function ChatXView({ chatInfo }: { chatInfo: UserChatT }) {
     }
 
     const genProps = {
-      isOwn: entry.is_own || false,
+      isOwn: entry.is_own,
       timestamp: entry.created_at,
       deliveryStatus: entry.delivery_status || "pending",
       senderName: entry.sender?.username || "",
@@ -135,6 +140,8 @@ export default function ChatXView({ chatInfo }: { chatInfo: UserChatT }) {
           <TextMessage
             key={entry.id}
             textContent={entry.content.props.text_content || ""}
+            replyTargetMsg={entry.reply_target_msg}
+            activateReplyMode={() => activateReplyMode(entry)}
             {...genProps}
           />
         )
@@ -285,7 +292,11 @@ export default function ChatXView({ chatInfo }: { chatInfo: UserChatT }) {
       </div>
 
       {/* Messaging UI */}
-      <MessagingInterface chatInfo={chatInfo} replyMode={replyMode} />
+      <MessagingInterface
+        chatInfo={chatInfo}
+        replyMode={replyMode}
+        deactivateReplyMode={deactivateReplyMode}
+      />
     </div>
   )
 }

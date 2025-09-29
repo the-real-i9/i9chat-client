@@ -9,6 +9,7 @@ type Props = {
   senderAvatar: string
   showAvatar: boolean
   children: ReactNode
+  activateReplyMode: () => void
 }
 
 export default function MessageSnippetWrapper(p: Props) {
@@ -67,7 +68,10 @@ export default function MessageSnippetWrapper(p: Props) {
         >
           <div className="px-1 invisible group-hover:visible">
             <div className="rounded-full bg-white border border-gray-200 flex space-x-0.5">
-              <button className="msg-snip-opt-btn">
+              <button
+                onClick={p.activateReplyMode}
+                className="msg-snip-opt-btn"
+              >
                 <Reply size={16} className="text-gray-400" />
               </button>
             </div>

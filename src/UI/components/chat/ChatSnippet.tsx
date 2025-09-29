@@ -49,10 +49,7 @@ export default function ChatSnippet({ userChat }: { userChat: UserChatT }) {
     for (let i = chatHistory.length; i > 0; i--) {
       const histEntry = chatHistory[i - 1]
 
-      if (
-        histEntry.chat_hist_entry_type === "message" ||
-        histEntry.chat_hist_entry_type === "reply"
-      ) {
+      if (histEntry.chat_hist_entry_type === "message") {
         return histEntry.created_at
       }
     }
@@ -62,7 +59,7 @@ export default function ChatSnippet({ userChat }: { userChat: UserChatT }) {
     if (!lastChatHistoryEntry) return null
 
     const getMessageIcon = () => {
-      if (lchEntryType !== "message" && lchEntryType !== "reply") return null
+      if (lchEntryType !== "message") return null
 
       if (lastChatHistoryEntry.content?.type === "text") return null
 
@@ -83,7 +80,7 @@ export default function ChatSnippet({ userChat }: { userChat: UserChatT }) {
     }
 
     const getReadReceipt = () => {
-      if (lchEntryType !== "message" && lchEntryType !== "reply") return null
+      if (lchEntryType !== "message") return null
 
       if (!lastChatHistoryEntry.is_own)
         return `${lastChatHistoryEntry.sender?.username}:`
@@ -129,8 +126,9 @@ export default function ChatSnippet({ userChat }: { userChat: UserChatT }) {
     return (
       <div className="flex items-center space-x-1 text-sm text-gray-600">
         {getReadReceipt()}
-        {(lchEntryType === "message" || lchEntryType === "reply") &&
-          !lastChatHistoryEntry.is_own && <span>&nbsp;</span>}
+        {lchEntryType === "message" && !lastChatHistoryEntry.is_own && (
+          <span>&nbsp;</span>
+        )}
         {getMessageIcon()}
         <span className="truncate flex-1">{getDisplayContent()}</span>
       </div>

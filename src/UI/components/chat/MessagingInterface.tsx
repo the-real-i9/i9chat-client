@@ -5,6 +5,7 @@ import type { RepliedMsgT, UserChatT } from "../../../types/appTypes"
 type Props = {
   chatInfo: UserChatT
   replyMode: { repMsg: RepliedMsgT } | false
+  deactivateReplyMode: () => void
 }
 
 export default function MessagingInterface(p: Props) {

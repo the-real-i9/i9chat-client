@@ -41,15 +41,15 @@ type MessageContentT = {
   }
 }
 
-type RepliedMsgT = {
+type ReplyTargetMsgT = {
   id: string
   content: MessageContentT
   sender_username: string
-  is_own?: boolean
+  is_own: boolean
 }
 
 type ChatHistoryEntryT = {
-  chat_hist_entry_type: "message" | "reply" | "reaction" | "group activity"
+  chat_hist_entry_type: "message" | "reaction" | "group activity"
   created_at: number
 
   id?: string
@@ -62,13 +62,13 @@ type ChatHistoryEntryT = {
     at: number
   }[]
 
-  replied_to?: RepliedMsgT
+  reply_target_msg?: ReplyTargetMsgT
 
-  is_own?: boolean
+  is_own: boolean
 
   reaction?: string
 
   info?: string
 }
 
-export type { UserT, UserChatT, ChatHistoryEntryT, GroupInfoT, RepliedMsgT }
+export type { UserT, UserChatT, ChatHistoryEntryT, GroupInfoT, ReplyTargetMsgT }

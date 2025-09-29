@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react"
-import { Send, Paperclip, Mic } from "lucide-react"
-import type { RepliedMsgT, UserChatT } from "../../../../types/appTypes"
+import { Send, Paperclip, Mic, X } from "lucide-react"
+import type { ReplyTargetMsgT, UserChatT } from "../../../../types/appTypes"
 import RealtimeService from "../../../../services/realtimeService"
 import { useDispatch, useSelector } from "react-redux"
 import {
@@ -11,7 +11,8 @@ import type { RootState } from "../../../../store"
 
 type Props = {
   chatInfo: UserChatT
-  replyMode: { repMsg: RepliedMsgT } | false
+  replyMode: { replyTargetMsg: ReplyTargetMsgT } | false
+  deactivateReplyMode: () => void
   switchMsgInterface: (msgType: string) => void
 }
 
@@ -49,6 +50,9 @@ export default function TextMessagingInterface(p: Props) {
               text_content: messageInput,
             },
           },
+          reply_target_msg: p.replyMode
+            ? p.replyMode.replyTargetMsg
+            : undefined,
           is_own: true,
         },
       })
@@ -65,6 +69,11 @@ export default function TextMessagingInterface(p: Props) {
         data: {
           [chatType === "DM" ? "partnerUsername" : "groupId"]:
             p.chatInfo.chat_ident,
+
+          isReply: p.replyMode && true,
+          replyTargetMsgId: p.replyMode
+            ? p.replyMode.replyTargetMsg.id
+            : undefined,
 
           msg: {
             type: "text",
@@ -91,6 +100,26 @@ export default function TextMessagingInterface(p: Props) {
 
   return (
     <div className="bg-white border-t border-gray-200 p-4">
+      {/* TODO: We should style this based on target message types. For now we'll just style for type "text" */}
+      {p.replyMode ? (
+        <div className="bg-gray-200 py-3 px-4 mb-4 rounded-lg relative overflow-hidden">
+          <div className="w-1 h-full bg-blue-500 absolute left-0 top-0" />
+          <button
+            className="absolute top-3 right-3"
+            onClick={p.deactivateReplyMode}
+          >
+            <X size={24} className="text-gray-500" />
+          </button>
+          <div className="text-sm text-blue-600 mb-1">
+            {p.replyMode.replyTargetMsg.is_own
+              ? "You"
+              : p.replyMode.replyTargetMsg.sender_username}
+          </div>
+          <div className="text-sm text-gray-600">
+            {p.replyMode.replyTargetMsg.content.props.text_content}
+          </div>
+        </div>
+      ) : null}
       <form
         onSubmit={handleSendMessage}
         className="flex items-center space-x-3"
