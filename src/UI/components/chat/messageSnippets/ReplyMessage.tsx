@@ -1,4 +1,4 @@
-import MessageWrapper from "./MessageWrapper";
+import MessageSnippetWrapper from "../MessageSnippetWrapper"
 
 export default function ReplyMessage({
   message,
@@ -10,7 +10,7 @@ export default function ReplyMessage({
   showAvatar,
 }) {
   return (
-    <MessageWrapper
+    <MessageSnippetWrapper
       isOwn={isOwn}
       timestamp={timestamp}
       readStatus={readStatus}
@@ -24,7 +24,9 @@ export default function ReplyMessage({
         }`}
       >
         <div
-          className={`text-xs font-medium ${isOwn ? "text-blue-100" : "text-blue-600"}`}
+          className={`text-xs font-medium ${
+            isOwn ? "text-blue-100" : "text-blue-600"
+          }`}
         >
           {message.replyTo.senderName}
         </div>
@@ -33,6 +35,6 @@ export default function ReplyMessage({
         </div>
       </div>
       <p className="text-sm">{message.content}</p>
-    </MessageWrapper>
-  );
+    </MessageSnippetWrapper>
+  )
 }

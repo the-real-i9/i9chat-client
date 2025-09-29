@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Play, Pause, Headphones } from "lucide-react";
-import MessageWrapper from "./MessageWrapper";
+import { useState } from "react"
+import { Play, Pause, Headphones } from "lucide-react"
+import MessageSnippetWrapper from "../MessageSnippetWrapper"
 
 export default function AudioMessage({
   message,
@@ -11,17 +11,17 @@ export default function AudioMessage({
   senderAvatar,
   showAvatar,
 }) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [progress, setProgress] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [progress, setProgress] = useState(0)
 
   const togglePlay = () => {
-    setIsPlaying(!isPlaying);
+    setIsPlaying(!isPlaying)
     // TODO: Implement actual audio playback
-  };
+  }
 
   return (
-    <MessageWrapper
+    <MessageSnippetWrapper
       isOwn={isOwn}
       timestamp={timestamp}
       readStatus={readStatus}
@@ -42,7 +42,9 @@ export default function AudioMessage({
         <div className="flex-1">
           <div className="flex items-center justify-between mb-1">
             <span
-              className={`text-sm font-medium ${isOwn ? "text-white" : "text-gray-900"}`}
+              className={`text-sm font-medium ${
+                isOwn ? "text-white" : "text-gray-900"
+              }`}
             >
               {message.fileName}
             </span>
@@ -56,23 +58,31 @@ export default function AudioMessage({
           </div>
 
           <div
-            className={`w-full bg-gray-200 rounded-full h-1 ${isOwn ? "bg-blue-300" : ""}`}
+            className={`w-full bg-gray-200 rounded-full h-1 ${
+              isOwn ? "bg-blue-300" : ""
+            }`}
           >
             <div
-              className={`h-1 rounded-full ${isOwn ? "bg-white" : "bg-blue-500"}`}
+              className={`h-1 rounded-full ${
+                isOwn ? "bg-white" : "bg-blue-500"
+              }`}
               style={{ width: `${progress}%` }}
             />
           </div>
 
           <div
-            className={`text-xs mt-1 ${isOwn ? "text-blue-100" : "text-gray-500"}`}
+            className={`text-xs mt-1 ${
+              isOwn ? "text-blue-100" : "text-gray-500"
+            }`}
           >
             {isPlaying
-              ? `${Math.floor(currentTime / 60)}:${(currentTime % 60).toString().padStart(2, "0")} / ${message.duration}`
+              ? `${Math.floor(currentTime / 60)}:${(currentTime % 60)
+                  .toString()
+                  .padStart(2, "0")} / ${message.duration}`
               : message.duration}
           </div>
         </div>
       </div>
-    </MessageWrapper>
-  );
+    </MessageSnippetWrapper>
+  )
 }

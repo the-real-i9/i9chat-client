@@ -39,6 +39,12 @@
   }
 }
 
+@layer components {
+  .msg-snip-opt-btn {
+    @apply m-0.5 p-1 hover:bg-gray-200 rounded-full;
+  }
+}
+
 @theme {
   --font-sans: system-ui, Avenir, Helvetica, Arial, sans-serif;
 }

@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Play, Pause, Mic } from "lucide-react";
-import MessageWrapper from "./MessageWrapper";
+import { useState } from "react"
+import { Play, Pause, Mic } from "lucide-react"
+import MessageSnippetWrapper from "../MessageSnippetWrapper"
 
 export default function VoiceMessage({
   message,
@@ -11,17 +11,17 @@ export default function VoiceMessage({
   senderAvatar,
   showAvatar,
 }) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [currentTime, setCurrentTime] = useState(0)
 
   const togglePlay = () => {
-    setIsPlaying(!isPlaying);
+    setIsPlaying(!isPlaying)
     // TODO: Implement actual audio playback
-  };
+  }
 
   return (
-    <MessageWrapper
+    <MessageSnippetWrapper
       isOwn={isOwn}
       timestamp={timestamp}
       readStatus={readStatus}
@@ -53,8 +53,8 @@ export default function VoiceMessage({
                         ? "bg-white"
                         : "bg-blue-500"
                       : isOwn
-                        ? "bg-blue-300"
-                        : "bg-gray-300"
+                      ? "bg-blue-300"
+                      : "bg-gray-300"
                   }`}
                   style={{ height: `${Math.random() * 16 + 4}px` }}
                 />
@@ -66,11 +66,13 @@ export default function VoiceMessage({
             className={`text-xs ${isOwn ? "text-blue-100" : "text-gray-500"}`}
           >
             {isPlaying
-              ? `${Math.floor(currentTime / 60)}:${(currentTime % 60).toString().padStart(2, "0")}`
+              ? `${Math.floor(currentTime / 60)}:${(currentTime % 60)
+                  .toString()
+                  .padStart(2, "0")}`
               : message.duration}
           </div>
         </div>
       </div>
-    </MessageWrapper>
-  );
+    </MessageSnippetWrapper>
+  )
 }

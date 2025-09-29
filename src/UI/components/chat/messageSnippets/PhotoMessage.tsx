@@ -1,26 +1,26 @@
-import { useState } from "react";
-import { Upload } from "lucide-react";
-import MessageWrapper from "./MessageWrapper";
+import { useState } from "react"
+import { Upload } from "lucide-react"
+import MessageSnippetWrapper from "../MessageSnippetWrapper"
 
 type Props = {
-  isOwn: boolean;
-  timestamp: number;
-  deliveryStatus: "pending" | "sent" | "delivered" | "read";
-  senderName: string;
-  senderAvatar: string;
-  showAvatar: boolean;
-  uploadProgress?: number;
+  isOwn: boolean
+  timestamp: number
+  deliveryStatus: "pending" | "sent" | "delivered" | "read"
+  senderName: string
+  senderAvatar: string
+  showAvatar: boolean
+  uploadProgress?: number
   content: {
-    imageUrl: string;
-    caption: string;
-  };
+    imageUrl: string
+    caption: string
+  }
 }
 
 export default function PhotoMessage(p: Props) {
-  const [uploadProgress, setUploadProgress] = useState(p.uploadProgress || 100);
+  const [uploadProgress, setUploadProgress] = useState(p.uploadProgress || 100)
 
   return (
-    <MessageWrapper
+    <MessageSnippetWrapper
       isOwn={p.isOwn}
       timestamp={p.timestamp}
       deliveryStatus={p.deliveryStatus}
@@ -49,6 +49,6 @@ export default function PhotoMessage(p: Props) {
           <p className="text-sm mt-2">{p.content.caption}</p>
         )}
       </div>
-    </MessageWrapper>
-  );
+    </MessageSnippetWrapper>
+  )
 }

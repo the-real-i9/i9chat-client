@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Download, FileText } from "lucide-react";
-import MessageWrapper from "./MessageWrapper";
+import { useState } from "react"
+import { Download, FileText } from "lucide-react"
+import MessageSnippetWrapper from "../MessageSnippetWrapper"
 
 // File Message
 export function FileMessage({
@@ -12,25 +12,25 @@ export function FileMessage({
   senderAvatar,
   showAvatar,
 }) {
-  const [downloadProgress, setDownloadProgress] = useState(0);
-  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0)
+  const [isDownloading, setIsDownloading] = useState(false)
 
   const handleDownload = () => {
-    if (isDownloading) return;
-    setIsDownloading(true);
+    if (isDownloading) return
+    setIsDownloading(true)
     // TODO: Implement actual file download
-  };
+  }
 
   const formatFileSize = (bytes) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-  };
+    if (bytes === 0) return "0 Bytes"
+    const k = 1024
+    const sizes = ["Bytes", "KB", "MB", "GB"]
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
+  }
 
   return (
-    <MessageWrapper
+    <MessageSnippetWrapper
       isOwn={isOwn}
       timestamp={timestamp}
       readStatus={readStatus}
@@ -49,7 +49,9 @@ export function FileMessage({
 
         <div className="flex-1">
           <div
-            className={`text-sm font-medium ${isOwn ? "text-white" : "text-gray-900"}`}
+            className={`text-sm font-medium ${
+              isOwn ? "text-white" : "text-gray-900"
+            }`}
           >
             {message.fileName}
           </div>
@@ -61,10 +63,14 @@ export function FileMessage({
 
           {isDownloading && (
             <div
-              className={`w-full bg-gray-200 rounded-full h-1 mt-1 ${isOwn ? "bg-blue-300" : ""}`}
+              className={`w-full bg-gray-200 rounded-full h-1 mt-1 ${
+                isOwn ? "bg-blue-300" : ""
+              }`}
             >
               <div
-                className={`h-1 rounded-full ${isOwn ? "bg-white" : "bg-blue-500"}`}
+                className={`h-1 rounded-full ${
+                  isOwn ? "bg-white" : "bg-blue-500"
+                }`}
                 style={{ width: `${downloadProgress}%` }}
               />
             </div>
@@ -81,6 +87,6 @@ export function FileMessage({
           <Download size={16} />
         </button>
       </div>
-    </MessageWrapper>
-  );
+    </MessageSnippetWrapper>
+  )
 }

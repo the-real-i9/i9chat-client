@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Play, Upload } from "lucide-react";
-import MessageWrapper from "./MessageWrapper";
+import { useState } from "react"
+import { Play, Upload } from "lucide-react"
+import MessageSnippetWrapper from "../MessageSnippetWrapper"
 
 export default function VideoMessage({
   message,
@@ -12,11 +12,11 @@ export default function VideoMessage({
   showAvatar,
 }) {
   const [uploadProgress, setUploadProgress] = useState(
-    message.uploadProgress || 100,
-  );
+    message.uploadProgress || 100
+  )
 
   return (
-    <MessageWrapper
+    <MessageSnippetWrapper
       isOwn={isOwn}
       timestamp={timestamp}
       readStatus={readStatus}
@@ -55,6 +55,6 @@ export default function VideoMessage({
 
         {message.caption && <p className="text-sm mt-2">{message.caption}</p>}
       </div>
-    </MessageWrapper>
-  );
+    </MessageSnippetWrapper>
+  )
 }
